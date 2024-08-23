@@ -1,0 +1,134 @@
+# 项目相关配置
+zhenshu:
+  # 名称
+  name: RuoYi
+  # 版本
+  version: 2.2.0
+  # 版权年份
+  copyrightYear: 2019
+  # 实例演示开关
+  demoEnabled: true
+  # 文件路径 示例（ Windows配置D:/zhenshu/uploadPath，Linux配置 /home/zhenshu/uploadPath）
+  profile: ./file/
+  # 获取ip地址开关
+  addressEnabled: false
+  fileUrl: ./file/
+
+# 日志配置
+logging:
+  level:
+    com.zhenshu: info
+    org.springframework: warn
+
+# Spring配置
+spring:
+  # 资源信息
+  messages:
+    # 国际化资源文件路径
+    basename: i18n/messages
+  profiles:
+    active: dev
+  # 文件上传
+  servlet:
+    multipart:
+      # 单个文件大小
+      max-file-size:  500MB
+      # 设置总上传的文件大小
+      max-request-size:  500MB
+  # 服务模块
+  devtools:
+    restart:
+      # 热部署开关
+      enabled: true
+  mvc:
+    dispatch-options-request: true
+
+# token配置
+token:
+  # 令牌自定义标识
+  header: Authorization
+  # 令牌秘钥
+  secret: 443878e8w78ew7wew9e0w90ew==
+  # 令牌有效期（默认5小时）
+  expireTime: 300
+
+# MyBatis配置
+mybatis:
+  # 搜索指定包别名
+  typeAliasesPackage: com.zhenshu.**.domain
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapperLocations: classpath*:mybatis/**/*Mapper.xml
+  # 加载全局的配置文件
+  configLocation: classpath:mybatis/mybatis-config.xml
+
+# PageHelper分页插件
+pagehelper:
+  helperDialect: mysql
+  reasonable: false
+  supportMethodsArguments: true
+  params: count=countSql
+
+# Swagger配置
+swagger:
+  # 是否开启swagger
+  enabled: true
+  # 请求前缀
+  pathMapping: /dev-api
+
+# 防止XSS攻击
+xss:
+  # 过滤开关
+  enabled: true
+  # 排除链接（多个用逗号分隔）
+  excludes: /system/notice/*
+  # 匹配链接
+  urlPatterns: /system/*,/monitor/*,/tool/*
+
+# 代码生成
+gen:
+  # 作者
+  author: jing
+  # 默认生成包路径 system 需改成自己的模块名称 如 system monitor tool
+  packageName: com.zhenshu.base
+  # mapper
+  mapperName: com.zhenshu.mapper
+  # domain
+  domainName: com.zhenshu.mapper.domain
+  # 自动去除表前缀，默认是true
+  autoRemovePre: true
+  # 表前缀（生成类名不会包含表前缀，多个用逗号分隔）
+  tablePrefix: w_
+
+mybatis-plus:
+  # 如果是放在src/main/java目录下 classpath:/com/yourpackage/*/mapper/*Mapper.xml
+  # 如果是放在resource目录 classpath:/mapper/*Mapper.xml
+  mapper-locations: classpath:/mybatis/**/*Mapper.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.zhenshu.**.domain
+  global-config:
+    #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
+    id-type: 0
+    #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
+    field-strategy: 1
+    logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+    logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+    sql-injector: com.baomidou.mybatisplus.mapper.LogicSqlInjector
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    #配置JdbcTypeForNull
+    jdbc-type-for-null: 'null'
+aliyun:
+  endpoint:
+  accessKeyId:
+  accessKeySecret:
+  bucketName:
+  address:
+  projectName:
+
+
+storage:
+  type: aliyun
+
+
+

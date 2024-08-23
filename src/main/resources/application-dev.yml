@@ -1,0 +1,157 @@
+# 开发环境配置
+server:
+  # 服务器的HTTP端口，默认为8080
+  port: 8106
+  servlet:
+    # 应用的访问路径
+    context-path: /
+  tomcat:
+    # tomcat的URI编码
+    uri-encoding: UTF-8
+    # tomcat最大线程数，默认为200
+    max-threads: 800
+    # Tomcat启动初始化的线程数，默认值25
+    min-spare-threads: 30
+
+# 数据源配置
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    druid:
+      url: jdbc:mysql://127.0.0.1:3306/zhenyouxue?useUnicode=true&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&allowMultiQueries=true
+      username: root
+      password: root
+      # 初始连接数
+      initialSize: 10
+      # 最小连接池数量
+      minIdle: 10
+      # 最大连接池数量
+      maxActive: 250
+      # 配置获取连接等待超时的时间
+      maxWait: 600000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 300000
+      # 配置一个连接在池中最大生存的时间，单位是毫秒
+      maxEvictableIdleTimeMillis: 900000
+      # 配置检测连接是否有效
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      webStatFilter:
+        enabled: true
+      statViewServlet:
+        enabled: true
+        # 设置白名单，不填则允许所有访问
+        allow:
+        url-pattern: /druid/*
+        # 控制台管理用户名和密码
+        login-username: druid
+        login-password: druid7283!2
+      filter:
+        stat:
+          enabled: true
+          # 慢SQL记录
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: true
+        wall:
+          config:
+            multi-statement-allow: true
+  # redis 配置
+  redis:
+    # 地址
+    host: 127.0.0.1
+    # 端口，默认为6379
+    port: 6379
+    # 密码
+    password:
+    # 连接超时时间(单位毫秒)
+    timeout: 10s
+    lettuce:
+      pool:
+        # 连接池中的最小空闲连接
+        min-idle: 0
+        # 连接池中的最大空闲连接
+        max-idle: 8
+        # 连接池的最大数据库连接数
+        max-active: 8
+        # #连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1ms
+    jredis:
+      #单位毫秒
+      timeout: 10000
+      max-wait: -1
+    # 数据库
+    database: 10
+    # 缓存名
+    cache_student_name: student
+    cache_name: zhenyouxue
+
+aliyun-sms:
+  regionId:
+  accessKeyId:
+  accessKeySecret:
+  sign:
+  templateId:
+
+#鉴学配置
+jianxue:
+  #签到每日领取的鉴学点
+  signPoint: 0.3
+  # 每个销售员最多拥有多少个线索
+  clueLimit: 10
+  # 每个收集信息解锁需要的鉴学点
+  collectPoint: 5
+  # 团购活动费率
+  groupAct:
+    # 团购费率收取50%
+    rate: 50
+    #课次数量 3-8次
+    timeNumLess: 3
+    timeNumMore: 8
+    #价格 49-199
+    priceLess: 49
+    priceMore: 199
+  distributionAct:
+    # 分销费率5%
+    rate: 5
+    #课次数量 8-24次
+    timeNumLess: 8
+    timeNumMore: 24
+    #价格 199-1999
+    priceLess: 199
+    priceMore: 1999
+  # 会员价格 元
+  memberAmount: 365
+  # 直播录播
+  live:
+    # 人数 人
+    num: 100
+    # 直播录播价格 元
+    price:
+      #优惠价
+      discount: 4800
+      # 正常价
+      normal: 6800
+
+#微信小程序
+wx-config:
+  # 鉴而学
+  appid:
+
+wx-mec-config:
+  appid: wxa6c1b80b8547f706
+
+#百度api
+baidu:
+  url:
+  ak:
+  output: json
+
+sentry:
+  dsn:
+  enable: false
