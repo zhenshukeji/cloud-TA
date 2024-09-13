@@ -2,12 +2,12 @@ package com.zhenshu.framework.schedule;
 
 import com.zhenshu.common.enums.DayEnum;
 import com.zhenshu.common.utils.DateUtils;
-import com.zhenshu.zhenxueyou.mec.educenter.domain.bo.BdClassTimeBO;
-import com.zhenshu.zhenxueyou.mec.educenter.domain.bo.BdStudentClassBO;
-import com.zhenshu.zhenxueyou.mec.educenter.domain.vo.ClassTimeVO;
-import com.zhenshu.zhenxueyou.mec.educenter.manager.TemplateManager;
-import com.zhenshu.zhenxueyou.mec.educenter.manager.TimeTableDataManager;
-import com.zhenshu.zhenxueyou.mec.educenter.service.IBdStudentClassService;
+import com.zhenshu.cloud.mec.educenter.domain.bo.BdClassTimeBO;
+import com.zhenshu.cloud.mec.educenter.domain.bo.BdStudentClassBO;
+import com.zhenshu.cloud.mec.educenter.domain.vo.ClassTimeVO;
+import com.zhenshu.cloud.mec.educenter.manager.TemplateManager;
+import com.zhenshu.cloud.mec.educenter.manager.TimeTableDataManager;
+import com.zhenshu.cloud.mec.educenter.service.IBdStudentClassService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;

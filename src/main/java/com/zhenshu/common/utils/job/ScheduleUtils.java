@@ -13,7 +13,7 @@ import org.quartz.TriggerKey;
 import com.zhenshu.common.constant.ScheduleConstants;
 import com.zhenshu.common.exception.job.TaskException;
 import com.zhenshu.common.exception.job.TaskException.Code;
-import com.zhenshu.zhenxueyou.mec.project.monitor.domain.SysJob;
+import com.zhenshu.cloud.mec.project.monitor.domain.SysJob;
 
 /**
  * 定时任务工具类

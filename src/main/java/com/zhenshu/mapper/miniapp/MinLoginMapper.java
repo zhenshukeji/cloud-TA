@@ -1,10 +1,10 @@
 package com.zhenshu.mapper.miniapp;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
-import com.zhenshu.zhenxueyou.platform.miniapp.domain.bo.MinLoginBO;
-import com.zhenshu.zhenxueyou.platform.miniapp.domain.vo.MinLoginVO;
-import com.zhenshu.zhenxueyou.platform.statistics.domain.bo.DayDataBO;
-import com.zhenshu.zhenxueyou.platform.statistics.domain.bo.YearDataBO;
+import com.zhenshu.cloud.platform.miniapp.domain.bo.MinLoginBO;
+import com.zhenshu.cloud.platform.miniapp.domain.vo.MinLoginVO;
+import com.zhenshu.cloud.platform.statistics.domain.bo.DayDataBO;
+import com.zhenshu.cloud.platform.statistics.domain.bo.YearDataBO;
 import com.zhenshu.mapper.domain.miniapp.MinLogin;
 
 import java.util.List;

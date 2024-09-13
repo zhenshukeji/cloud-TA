@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import com.zhenshu.common.utils.StringUtils;
 import com.zhenshu.common.utils.spring.SpringUtils;
-import com.zhenshu.zhenxueyou.mec.project.monitor.domain.SysJob;
+import com.zhenshu.cloud.mec.project.monitor.domain.SysJob;
 
 /**
  * 任务执行工具

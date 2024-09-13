@@ -89,7 +89,7 @@ spring:
     database: 10
     # 缓存名
     cache_student_name: student
-    cache_name: zhenyouxue
+    cache_name: cloud
 
 aliyun-sms:
   regionId:

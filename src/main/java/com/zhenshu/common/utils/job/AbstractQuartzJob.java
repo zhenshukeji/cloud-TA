@@ -12,9 +12,9 @@ import com.zhenshu.common.utils.ExceptionUtil;
 import com.zhenshu.common.utils.StringUtils;
 import com.zhenshu.common.utils.bean.BeanUtils;
 import com.zhenshu.common.utils.spring.SpringUtils;
-import com.zhenshu.zhenxueyou.mec.project.monitor.domain.SysJob;
-import com.zhenshu.zhenxueyou.mec.project.monitor.domain.SysJobLog;
-import com.zhenshu.zhenxueyou.mec.project.monitor.service.ISysJobLogService;
+import com.zhenshu.cloud.mec.project.monitor.domain.SysJob;
+import com.zhenshu.cloud.mec.project.monitor.domain.SysJobLog;
+import com.zhenshu.cloud.mec.project.monitor.service.ISysJobLogService;
 
 /**
  * 抽象quartz调用

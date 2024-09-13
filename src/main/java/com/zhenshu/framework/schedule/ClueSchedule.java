@@ -1,8 +1,8 @@
 package com.zhenshu.framework.schedule;
 
 import com.zhenshu.common.constant.Constants;
-import com.zhenshu.zhenxueyou.mec.sale.domain.bo.BdClueInfoBO;
-import com.zhenshu.zhenxueyou.mec.sale.service.IBdClueInfoService;
+import com.zhenshu.cloud.mec.sale.domain.bo.BdClueInfoBO;
+import com.zhenshu.cloud.mec.sale.service.IBdClueInfoService;
 import com.zhenshu.mapper.domain.sale.BdClueInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

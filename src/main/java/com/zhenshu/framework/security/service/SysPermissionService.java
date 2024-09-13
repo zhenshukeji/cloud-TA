@@ -1,7 +1,7 @@
 package com.zhenshu.framework.security.service;
 
-import com.zhenshu.zhenxueyou.mec.project.system.domain.SysUser;
-import com.zhenshu.zhenxueyou.mec.project.system.service.ISysRoleService;
+import com.zhenshu.cloud.mec.project.system.domain.SysUser;
+import com.zhenshu.cloud.mec.project.system.service.ISysRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

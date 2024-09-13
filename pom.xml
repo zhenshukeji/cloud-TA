@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.zhenshu</groupId>
-    <artifactId>zhenyouxue</artifactId>
+    <artifactId>cloud-TA</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <name>zhenxueyou</name>
-    <description>臻学优教培机构管理系统</description>
+    <description>云朵助教培训机构管理系统</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>

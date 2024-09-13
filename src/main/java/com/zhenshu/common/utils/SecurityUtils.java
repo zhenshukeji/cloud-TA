@@ -4,7 +4,7 @@ import com.zhenshu.common.constant.HttpStatus;
 import com.zhenshu.common.enums.UserLoginType;
 import com.zhenshu.common.exception.CustomException;
 import com.zhenshu.framework.security.LoginUser;
-import com.zhenshu.zhenxueyou.mec.project.system.domain.SysUser;
+import com.zhenshu.cloud.mec.project.system.domain.SysUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

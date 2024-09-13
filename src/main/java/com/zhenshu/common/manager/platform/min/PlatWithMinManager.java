@@ -1,8 +1,8 @@
 package com.zhenshu.common.manager.platform.min;
 
-import com.zhenshu.zhenxueyou.platform.miniapp.service.IMinLoginService;
-import com.zhenshu.zhenxueyou.platform.statistics.domain.bo.DayDataBO;
-import com.zhenshu.zhenxueyou.platform.statistics.domain.bo.YearDataBO;
+import com.zhenshu.cloud.platform.miniapp.service.IMinLoginService;
+import com.zhenshu.cloud.platform.statistics.domain.bo.DayDataBO;
+import com.zhenshu.cloud.platform.statistics.domain.bo.YearDataBO;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

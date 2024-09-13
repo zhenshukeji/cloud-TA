@@ -6,7 +6,7 @@ import java.util.Set;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.zhenshu.zhenxueyou.mec.project.system.domain.SysUser;
+import com.zhenshu.cloud.mec.project.system.domain.SysUser;
 
 /**
  * 登录用户身份权限

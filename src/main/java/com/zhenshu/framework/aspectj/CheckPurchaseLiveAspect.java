@@ -1,9 +1,9 @@
 package com.zhenshu.framework.aspectj;
 
 import com.zhenshu.common.utils.DateUtils;
-import com.zhenshu.zhenxueyou.mec.base.domain.bo.BdCampusBO;
-import com.zhenshu.zhenxueyou.mec.base.domain.vo.BdCampusVO;
-import com.zhenshu.zhenxueyou.mec.base.service.IBdCampusService;
+import com.zhenshu.cloud.mec.base.domain.bo.BdCampusBO;
+import com.zhenshu.cloud.mec.base.domain.vo.BdCampusVO;
+import com.zhenshu.cloud.mec.base.service.IBdCampusService;
 import com.zhenshu.common.enums.base.CampusEnum;
 import com.zhenshu.common.exception.CustomException;
 import com.zhenshu.common.utils.SecurityUtils;

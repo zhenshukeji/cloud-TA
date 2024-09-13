@@ -15,8 +15,8 @@ import com.zhenshu.framework.aspectj.lang.annotation.DataScope;
 import com.zhenshu.framework.security.LoginUser;
 import com.zhenshu.framework.security.service.TokenService;
 import com.zhenshu.framework.web.domain.BaseEntity;
-import com.zhenshu.zhenxueyou.mec.project.system.domain.SysRole;
-import com.zhenshu.zhenxueyou.mec.project.system.domain.SysUser;
+import com.zhenshu.cloud.mec.project.system.domain.SysRole;
+import com.zhenshu.cloud.mec.project.system.domain.SysUser;
 
 /**
  * 数据过滤处理

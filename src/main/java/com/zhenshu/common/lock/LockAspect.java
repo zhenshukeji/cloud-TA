@@ -3,7 +3,7 @@ package com.zhenshu.common.lock;
 import com.zhenshu.common.exception.CustomException;
 import com.zhenshu.common.utils.SecurityUtils;
 import com.zhenshu.framework.redis.RedisUtils;
-import com.zhenshu.zhenxueyou.mec.project.system.domain.SysUser;
+import com.zhenshu.cloud.mec.project.system.domain.SysUser;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.ProceedingJoinPoint;

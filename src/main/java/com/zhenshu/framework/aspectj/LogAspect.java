@@ -28,7 +28,7 @@ import com.zhenshu.framework.manager.AsyncManager;
 import com.zhenshu.framework.manager.factory.AsyncFactory;
 import com.zhenshu.framework.security.LoginUser;
 import com.zhenshu.framework.security.service.TokenService;
-import com.zhenshu.zhenxueyou.mec.project.monitor.domain.SysOperLog;
+import com.zhenshu.cloud.mec.project.monitor.domain.SysOperLog;
 
 /**
  * 操作日志记录处理

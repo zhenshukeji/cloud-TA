@@ -9,10 +9,10 @@ import com.zhenshu.common.utils.ServletUtils;
 import com.zhenshu.common.utils.ip.AddressUtils;
 import com.zhenshu.common.utils.ip.IpUtils;
 import com.zhenshu.common.utils.spring.SpringUtils;
-import com.zhenshu.zhenxueyou.mec.project.monitor.domain.SysLogininfor;
-import com.zhenshu.zhenxueyou.mec.project.monitor.domain.SysOperLog;
-import com.zhenshu.zhenxueyou.mec.project.monitor.service.ISysLogininforService;
-import com.zhenshu.zhenxueyou.mec.project.monitor.service.ISysOperLogService;
+import com.zhenshu.cloud.mec.project.monitor.domain.SysLogininfor;
+import com.zhenshu.cloud.mec.project.monitor.domain.SysOperLog;
+import com.zhenshu.cloud.mec.project.monitor.service.ISysLogininforService;
+import com.zhenshu.cloud.mec.project.monitor.service.ISysOperLogService;
 import eu.bitwalker.useragentutils.UserAgent;
 
 /**

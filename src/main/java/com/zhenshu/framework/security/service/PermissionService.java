@@ -8,7 +8,7 @@ import org.springframework.util.CollectionUtils;
 import com.zhenshu.common.utils.ServletUtils;
 import com.zhenshu.common.utils.StringUtils;
 import com.zhenshu.framework.security.LoginUser;
-import com.zhenshu.zhenxueyou.mec.project.system.domain.SysRole;
+import com.zhenshu.cloud.mec.project.system.domain.SysRole;
 
 import javax.servlet.http.HttpServletRequest;
 
