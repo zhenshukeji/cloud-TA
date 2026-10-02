@@ -1,0 +1,157 @@
+# =====================================================================
+# 云朵教务社区版 · Docker Compose 部署（OS014）
+# ---------------------------------------------------------------------
+# 用法：
+#   cd community-edition
+#   cp deploy/.env.example deploy/.env      # 填你自己的值（.env 不进仓库）
+#   docker compose --env-file deploy/.env -f deploy/docker-compose.yml up -d --build
+#   docker compose --env-file deploy/.env -f deploy/docker-compose.yml ps
+#
+# 带演示数据（春芽艺术工作室）：
+#   docker compose --env-file deploy/.env \
+#     -f deploy/docker-compose.yml -f deploy/docker-compose.demo.yml up -d --build
+#
+# 边界（执行指引 §OS014）：
+#   * 只有前端（admin-web）对外发布端口；MySQL / Redis **不发布**到宿主机，
+#     仅在后端容器所在网络内可达（用 expose + 服务名互访）。
+#   * 数据用**命名卷**持久化：mysql-data / redis-data / uploads。
+#   * 初始化 SQL 只在「空数据卷」首次启动时执行一次（MySQL 官方镜像的
+#     /docker-entrypoint-initdb.d 语义），之后重启不会重复导入。
+#   * 本文件不含任何真实凭据：全部来自 .env（模板见 .env.example）。
+# =====================================================================
+
+name: yunduo-community
+
+services:
+
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?请先在 deploy/.env 设置 MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-yunduo_community}
+      MYSQL_USER: ${MYSQL_USER:-community}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?请先在 deploy/.env 设置 MYSQL_PASSWORD}
+      TZ: ${TZ:-Asia/Shanghai}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_0900_ai_ci
+      - --default-time-zone=+08:00
+    volumes:
+      - mysql-data:/var/lib/mysql
+      # 只在空数据卷首次启动时执行；文件级只读挂载（顺序按文件名前缀）
+      - ../database/001_schema.sql:/docker-entrypoint-initdb.d/01-001-schema.sql:ro
+      - ../database/002_seed_system.sql:/docker-entrypoint-initdb.d/02-002-seed.sql:ro
+    expose:
+      - "3306"
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 40s
+    networks: [community]
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command:
+      - redis-server
+      - --requirepass
+      - ${REDIS_PASSWORD:?请先在 deploy/.env 设置 REDIS_PASSWORD}
+      - --appendonly
+      - "yes"
+    volumes:
+      - redis-data:/data
+    expose:
+      - "6379"
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" ping | grep -q PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 15s
+    networks: [community]
+
+  backend:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.backend
+      args:
+        MAVEN_IMAGE: ${MAVEN_IMAGE:-maven:3.9-eclipse-temurin-8}
+        JRE_IMAGE: ${JRE_IMAGE:-eclipse-temurin:8-jre-alpine}
+    image: yunduo-community/backend:${IMAGE_TAG:-v0.1.0}
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      # 数据库 / Redis 一律走服务名，不暴露给宿主机
+      MYSQL_HOST: mysql
+      MYSQL_PORT: "3306"
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-yunduo_community}
+      MYSQL_USER: ${MYSQL_USER:-community}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?}
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?}
+      REDIS_DB: ${REDIS_DB:-12}
+      REDIS_CACHE_NAME: ${REDIS_CACHE_NAME:-yunduo_community}
+      TOKEN_SECRET: ${TOKEN_SECRET:?请先在 deploy/.env 设置 TOKEN_SECRET（≥32 位随机串）}
+      INITIAL_ADMIN_PASSWORD: ${INITIAL_ADMIN_PASSWORD:?请先在 deploy/.env 设置初始管理员口令}
+      UPLOAD_ROOT: /data/uploads
+      SERVER_PORT: "8080"
+      TZ: ${TZ:-Asia/Shanghai}
+    volumes:
+      # 上传文件走命名卷，容器重建不丢
+      - uploads:/data/uploads
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    expose:
+      - "8080"
+    healthcheck:
+      # 说明：社区版启动守卫（CommunityStartupGuard）失败会让进程**退出**，
+      # 端口随之消失；因此「端口可连」在这里等价于「进程活着且已通过守卫」。
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 8080"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 90s
+    networks: [community]
+
+  admin-web:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.admin-web
+      args:
+        NODE_IMAGE: ${NODE_IMAGE:-node:22-alpine}
+        NGINX_IMAGE: ${NGINX_IMAGE:-nginx:1.27-alpine}
+    image: yunduo-community/admin-web:${IMAGE_TAG:-v0.1.0}
+    restart: unless-stopped
+    ports:
+      # 唯一对外发布的端口；容器内 nginx 只暴露「前端静态资源」与「/api/ 反代」
+      - "${HTTP_PORT:-8080}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 15s
+    networks: [community]
+
+volumes:
+  mysql-data:
+    name: yunduo-community-mysql-data
+  redis-data:
+    name: yunduo-community-redis-data
+  uploads:
+    name: yunduo-community-uploads
+
+networks:
+  community:
+    name: yunduo-community
+    driver: bridge

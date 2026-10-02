@@ -1,0 +1,1067 @@
+{
+ "generated_from": "outputs/open-source-review/OS008/excluded-endpoints.json",
+ "note": "OS008 冻结的「应 404 商业接口」清单（OS012 测试夹具快照）。路径含模块名，不含任何凭据。",
+ "total": 265,
+ "endpoints": [
+  {
+   "http": "GET",
+   "path": "/platform/personnel/platform/personnel"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/personnel/list"
+  },
+  {
+   "http": "POST",
+   "path": "/platform/personnel/add"
+  },
+  {
+   "http": "POST",
+   "path": "/platform/personnel/getDetail"
+  },
+  {
+   "http": "POST",
+   "path": "/platform/personnel/update"
+  },
+  {
+   "http": "POST",
+   "path": "/platform/personnel/delete"
+  },
+  {
+   "http": "POST",
+   "path": "/platform/personnel/reset"
+  },
+  {
+   "http": "POST",
+   "path": "/platform/personnel/allRole"
+  },
+  {
+   "http": "POST",
+   "path": "/platform/personnel/inviteList"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/personnel/monthsNum"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/personnel/inviteNum/{platPersonId}"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/role/platform/role"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/role/list"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/role/{roleId}"
+  },
+  {
+   "http": "PUT",
+   "path": "/platform/role/dataScope"
+  },
+  {
+   "http": "PUT",
+   "path": "/platform/role/changeStatus"
+  },
+  {
+   "http": "DELETE",
+   "path": "/platform/role/{roleIds}"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/customerService/platform/customerService"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/customerService/get"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/customerService/queryCustomerById/{id}"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/customerService/list"
+  },
+  {
+   "http": "DELETE",
+   "path": "/platform/customerService/remove/{id}"
+  },
+  {
+   "http": "POST",
+   "path": "/platform/customerService/add"
+  },
+  {
+   "http": "PUT",
+   "path": "/platform/customerService/edit"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/banner/platform/banner"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/banner/list"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/banner/{id}"
+  },
+  {
+   "http": "DELETE",
+   "path": "/platform/banner/{id}"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/information/platform/information"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/information/list"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/information/{id}"
+  },
+  {
+   "http": "DELETE",
+   "path": "/platform/information/{id}"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/mechanismAudit/platform/mechanismAudit"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/mechanismAudit/mechanismList"
+  },
+  {
+   "http": "POST",
+   "path": "/platform/mechanismAudit/auditMechanism"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/mechanismAudit/info/{id}"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/mechanismAudit/queryInfo/{id}"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/mechanismAudit/getOfficialWebSites"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/mechanismAudit/getWebsiteDetail/{campusHomeId}"
+  },
+  {
+   "http": "POST",
+   "path": "/platform/mechanismAudit/auditWebsite"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/mechanismAudit/getCampusInfos"
+  },
+  {
+   "http": "POST",
+   "path": "/platform/mechanismAudit/auditCampusInfo"
+  },
+  {
+   "http": "PUT",
+   "path": "/platform/mechanismAudit/upActStatusByID"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/mechanismAudit/queryBdMarketActAll"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/mechanismInfo/platform/mechanismInfo"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/mechanismInfo/auditedMechanism"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/mechanismInfo/campusInfoByMecId"
+  },
+  {
+   "http": "POST",
+   "path": "/platform/mechanismInfo/openAuthority"
+  },
+  {
+   "http": "POST",
+   "path": "/platform/mechanismInfo/into"
+  },
+  {
+   "http": "POST",
+   "path": "/platform/mechanismInfo/goBack"
+  },
+  {
+   "http": "POST",
+   "path": "/platform/mechanismInfo/withdrawal"
+  },
+  {
+   "http": "GET",
+   "path": "/miniapp/login/miniapp/login"
+  },
+  {
+   "http": "GET",
+   "path": "/miniapp/login/list"
+  },
+  {
+   "http": "GET",
+   "path": "/miniapp/login/{id}"
+  },
+  {
+   "http": "DELETE",
+   "path": "/miniapp/login/{id}"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/camAccountTurnover/platform/camAccountTurnover"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/camAccountTurnover/rechargeList"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/camAccountTurnover/outlayList"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/camAccountTurnover/incomeList"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/camAccountTurnover/withdrawList"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/camAccountTurnover/exportIncomeList"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/account/platform/account"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/turnover/platform/turnover"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/turnover/list"
+  },
+  {
+   "http": "POST",
+   "path": "/platform/turnover/exportMonths"
+  },
+  {
+   "http": "POST",
+   "path": "/platform/turnover/exportQuarterly"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/stuAccountTurnover/platform/stuAccountTurnover"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/stuAccountTurnover/rechargeList"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/stuAccountTurnover/outlayList"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/stuAccountTurnover/exportIncomeList"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/stuAccountTurnover/exportOutlayList"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/stuAccountTurnover/withdrawRecord"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/stuAccountTurnover/downloadWithdraw"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/data/platform/data"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/data/list"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/data/mecNum"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/data/minNum"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/data/mecNumByYears"
+  },
+  {
+   "http": "GET",
+   "path": "/platform/data/stuNumByYears"
+  },
+  {
+   "http": "GET",
+   "path": "/sale/clue/sale/clue"
+  },
+  {
+   "http": "GET",
+   "path": "/sale/clue/myList"
+  },
+  {
+   "http": "GET",
+   "path": "/sale/clue/query"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/clue/add"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/clue/update"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/clue/audition"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/clue/apply"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/clue/course"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/clue/class"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/clue/invalid"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/clue/follow/list"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/clue/follow/cancel"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/clue/follow/add"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/clue/follow/follow"
+  },
+  {
+   "http": "GET",
+   "path": "/sale/distribution/sale/distribution"
+  },
+  {
+   "http": "GET",
+   "path": "/sale/distribution/list"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/distribution/update"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/distribution/add"
+  },
+  {
+   "http": "DELETE",
+   "path": "/sale/distribution/{id}"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/distribution/record/course"
+  },
+  {
+   "http": "GET",
+   "path": "/sale/distribution/record"
+  },
+  {
+   "http": "GET",
+   "path": "/sale/distribution/data"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/distribution/mark"
+  },
+  {
+   "http": "GET",
+   "path": "/sale/group/sale/group"
+  },
+  {
+   "http": "GET",
+   "path": "/sale/group/list"
+  },
+  {
+   "http": "GET",
+   "path": "/sale/group/get"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/group/update"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/group/add"
+  },
+  {
+   "http": "DELETE",
+   "path": "/sale/group/{id}"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/group/data"
+  },
+  {
+   "http": "GET",
+   "path": "/sale/group/ungrouped"
+  },
+  {
+   "http": "GET",
+   "path": "/sale/group/grouped"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/group/mark"
+  },
+  {
+   "http": "GET",
+   "path": "/sale/market/sale/market"
+  },
+  {
+   "http": "GET",
+   "path": "/sale/market/{id}"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/market/update"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/market/publishMarket"
+  },
+  {
+   "http": "DELETE",
+   "path": "/sale/market/{id}"
+  },
+  {
+   "http": "GET",
+   "path": "/sale/market/invite/list"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/market/collect/list"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/market/collect/batch"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/market/point"
+  },
+  {
+   "http": "GET",
+   "path": "/sale/market/qrcode"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/market/addMarketAct"
+  },
+  {
+   "http": "GET",
+   "path": "/sale/market/queryList"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/market/againSubmit/{id}"
+  },
+  {
+   "http": "GET",
+   "path": "/sale/market/preview"
+  },
+  {
+   "http": "GET",
+   "path": "/sale/sea/sale/sea"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/sea/list"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/sea/seller"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/sea/distribution"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/sea/claim"
+  },
+  {
+   "http": "POST",
+   "path": "/sale/sea/delete"
+  },
+  {
+   "http": "GET",
+   "path": "/sale/member/sale/member"
+  },
+  {
+   "http": "GET",
+   "path": "/sale/member/endTime"
+  },
+  {
+   "http": "GET",
+   "path": "/online/recordBroadcast/online/recordBroadcast"
+  },
+  {
+   "http": "GET",
+   "path": "/online/recordBroadcast/list"
+  },
+  {
+   "http": "GET",
+   "path": "/online/recordBroadcast/{id}"
+  },
+  {
+   "http": "DELETE",
+   "path": "/online/recordBroadcast/{id}"
+  },
+  {
+   "http": "GET",
+   "path": "/online/recordBroadcast/offShelf/{id}"
+  },
+  {
+   "http": "GET",
+   "path": "/online/recordBroadcast/purchaseHistory"
+  },
+  {
+   "http": "GET",
+   "path": "/online/recordBroadcast/exportPurchase/{id}"
+  },
+  {
+   "http": "GET",
+   "path": "/online/recordBroadcast/invite/{id}"
+  },
+  {
+   "http": "GET",
+   "path": "/online/purchaseLive/online/purchaseLive"
+  },
+  {
+   "http": "GET",
+   "path": "/online/purchaseLive/endTime"
+  },
+  {
+   "http": "GET",
+   "path": "/online/liveBroadcast/online/liveBroadcast"
+  },
+  {
+   "http": "GET",
+   "path": "/online/liveBroadcast/list"
+  },
+  {
+   "http": "GET",
+   "path": "/online/liveBroadcast/detail/{id}"
+  },
+  {
+   "http": "PUT",
+   "path": "/online/liveBroadcast/updateLive"
+  },
+  {
+   "http": "POST",
+   "path": "/online/liveBroadcast/insertLive"
+  },
+  {
+   "http": "POST",
+   "path": "/online/liveBroadcast/uploadImg"
+  },
+  {
+   "http": "POST",
+   "path": "/online/liveBroadcast/deleteRoom"
+  },
+  {
+   "http": "GET",
+   "path": "/online/liveBroadcast/playback"
+  },
+  {
+   "http": "GET",
+   "path": "/online/liveBroadcast/getShareImgById"
+  },
+  {
+   "http": "POST",
+   "path": "/online/liveBroadcast/broadcastCode"
+  },
+  {
+   "http": "GET",
+   "path": "/online/liveBroadcast/purchaseHistory"
+  },
+  {
+   "http": "GET",
+   "path": "/online/liveBroadcast/watchHistory"
+  },
+  {
+   "http": "GET",
+   "path": "/online/liveBroadcast/getCampusAccount"
+  },
+  {
+   "http": "GET",
+   "path": "/online/liveBroadcast/pay"
+  },
+  {
+   "http": "GET",
+   "path": "/online/liveBroadcast/getPushAddr/{roomId}"
+  },
+  {
+   "http": "GET",
+   "path": "/online/liveBroadcast/goods/online/liveBroadcast/goods"
+  },
+  {
+   "http": "POST",
+   "path": "/online/liveBroadcast/goods/addGoods"
+  },
+  {
+   "http": "GET",
+   "path": "/online/liveBroadcast/goods/listByRoomId"
+  },
+  {
+   "http": "GET",
+   "path": "/online/liveBroadcast/goods/exportListStock"
+  },
+  {
+   "http": "DELETE",
+   "path": "/online/liveBroadcast/goods/delGoods"
+  },
+  {
+   "http": "PUT",
+   "path": "/online/liveBroadcast/goods/sortGoods"
+  },
+  {
+   "http": "GET",
+   "path": "/online/liveBroadcast/stock/online/liveBroadcast/stock"
+  },
+  {
+   "http": "GET",
+   "path": "/online/liveBroadcast/stock/getCourseByType"
+  },
+  {
+   "http": "POST",
+   "path": "/online/liveBroadcast/stock/addGoodsStock"
+  },
+  {
+   "http": "DELETE",
+   "path": "/online/liveBroadcast/stock/delStock/{goodIds}"
+  },
+  {
+   "http": "GET",
+   "path": "/online/liveBroadcast/stock/listStock"
+  },
+  {
+   "http": "GET",
+   "path": "/online/liveBroadcast/stock/liveList"
+  },
+  {
+   "http": "POST",
+   "path": "/online/liveBroadcast/stock/recallCheck"
+  },
+  {
+   "http": "PUT",
+   "path": "/online/liveBroadcast/stock/upGoodsStock"
+  },
+  {
+   "http": "POST",
+   "path": "/online/liveBroadcast/stock/resubmit"
+  },
+  {
+   "http": "GET",
+   "path": "/homeschool/evaStudent/homeschool/evaStudent"
+  },
+  {
+   "http": "GET",
+   "path": "/homeschool/evaStudent/list"
+  },
+  {
+   "http": "GET",
+   "path": "/homeschool/evaStudent/{id}"
+  },
+  {
+   "http": "GET",
+   "path": "/homeschool/evaStudent/studentList"
+  },
+  {
+   "http": "GET",
+   "path": "/homeschool/evaStudent/getAllEvaStudent"
+  },
+  {
+   "http": "GET",
+   "path": "/homeschool/growthLog/homeschool/growthLog"
+  },
+  {
+   "http": "GET",
+   "path": "/homeschool/growthLog/list"
+  },
+  {
+   "http": "GET",
+   "path": "/homeschool/growthLog/deleteGrowth/{id}"
+  },
+  {
+   "http": "GET",
+   "path": "/homeschool/growthLog/studentList"
+  },
+  {
+   "http": "GET",
+   "path": "/homeschool/infoList/homeschool/infoList"
+  },
+  {
+   "http": "GET",
+   "path": "/homeschool/infoList/messageList"
+  },
+  {
+   "http": "GET",
+   "path": "/homeschool/infoList/{id}"
+  },
+  {
+   "http": "POST",
+   "path": "/homeschool/infoList/teacherReplyInfo"
+  },
+  {
+   "http": "GET",
+   "path": "/homeschool/infoList/historyRecord"
+  },
+  {
+   "http": "GET",
+   "path": "/homeschool/infoList/studentList"
+  },
+  {
+   "http": "POST",
+   "path": "/homeschool/infoList/messageToStudent"
+  },
+  {
+   "http": "GET",
+   "path": "/homeschool/infoList/studentHistoryRecord"
+  },
+  {
+   "http": "GET",
+   "path": "/homeschool/infoList/historyByTeacherId"
+  },
+  {
+   "http": "POST",
+   "path": "/homeschool/infoList/addGrowthLog"
+  },
+  {
+   "http": "GET",
+   "path": "/homeschool/studentWork/homeschool/studentWork"
+  },
+  {
+   "http": "GET",
+   "path": "/homeschool/studentWork/list"
+  },
+  {
+   "http": "DELETE",
+   "path": "/homeschool/studentWork/{id}"
+  },
+  {
+   "http": "GET",
+   "path": "/homeschool/studentWork/stuWork/{id}"
+  },
+  {
+   "http": "GET",
+   "path": "/homeschool/studentWork/submit"
+  },
+  {
+   "http": "GET",
+   "path": "/homeschool/studentWork/unSubmit"
+  },
+  {
+   "http": "POST",
+   "path": "/homeschool/studentWork/submitEvaluating"
+  },
+  {
+   "http": "GET",
+   "path": "/homeschool/studentWork/classList"
+  },
+  {
+   "http": "GET",
+   "path": "/website/campusHome/website/campusHome"
+  },
+  {
+   "http": "GET",
+   "path": "/website/campusHome/collectList"
+  },
+  {
+   "http": "POST",
+   "path": "/website/campusHome/collect/batch"
+  },
+  {
+   "http": "POST",
+   "path": "/website/campusHome/point"
+  },
+  {
+   "http": "GET",
+   "path": "/website/camInformation/website/camInformation"
+  },
+  {
+   "http": "GET",
+   "path": "/website/camInformation/list"
+  },
+  {
+   "http": "GET",
+   "path": "/website/camInformation/{id}"
+  },
+  {
+   "http": "DELETE",
+   "path": "/website/camInformation/{id}"
+  },
+  {
+   "http": "GET",
+   "path": "/website/sign/website/sign"
+  },
+  {
+   "http": "GET",
+   "path": "/website/sign/list"
+  },
+  {
+   "http": "GET",
+   "path": "/website/sign/{id}"
+  },
+  {
+   "http": "GET",
+   "path": "/website/sign/signIn"
+  },
+  {
+   "http": "GET",
+   "path": "/website/feedback/website/feedback"
+  },
+  {
+   "http": "GET",
+   "path": "/website/feedback/list"
+  },
+  {
+   "http": "GET",
+   "path": "/website/feedback/{id}"
+  },
+  {
+   "http": "GET",
+   "path": "/website/feedback/markup/{id}"
+  },
+  {
+   "http": "PUT",
+   "path": "/website/feedback/addRemark"
+  },
+  {
+   "http": "GET",
+   "path": "/account/campus/account/campus"
+  },
+  {
+   "http": "GET",
+   "path": "/account/campus/get"
+  },
+  {
+   "http": "POST",
+   "path": "/account/campus/purchase"
+  },
+  {
+   "http": "POST",
+   "path": "/account/campus/pay"
+  },
+  {
+   "http": "POST",
+   "path": "/account/campus/complete"
+  },
+  {
+   "http": "GET",
+   "path": "/account/campus/list"
+  },
+  {
+   "http": "GET",
+   "path": "/account/member/account/member"
+  },
+  {
+   "http": "POST",
+   "path": "/account/member/join"
+  },
+  {
+   "http": "POST",
+   "path": "/account/member/campusAccount"
+  },
+  {
+   "http": "GET",
+   "path": "/home/index/home/index"
+  },
+  {
+   "http": "GET",
+   "path": "/home/index/campus"
+  },
+  {
+   "http": "GET",
+   "path": "/home/index/show"
+  },
+  {
+   "http": "GET",
+   "path": "/home/index/todo"
+  },
+  {
+   "http": "GET",
+   "path": "/home/index/info"
+  },
+  {
+   "http": "GET",
+   "path": "/home/index/info/{id}"
+  },
+  {
+   "http": "GET",
+   "path": "/home/index/customerService"
+  },
+  {
+   "http": "GET",
+   "path": "/home/index/customerServiceList"
+  },
+  {
+   "http": "GET",
+   "path": "/tool/gen/tool/gen"
+  },
+  {
+   "http": "GET",
+   "path": "/tool/gen/list"
+  },
+  {
+   "http": "GET",
+   "path": "/tool/gen/{talbleId}"
+  },
+  {
+   "http": "POST",
+   "path": "/tool/gen/getDigitalDictionary"
+  },
+  {
+   "http": "GET",
+   "path": "/tool/gen/db/list"
+  },
+  {
+   "http": "GET",
+   "path": "/tool/gen/column/{talbleId}"
+  },
+  {
+   "http": "POST",
+   "path": "/tool/gen/importTable"
+  },
+  {
+   "http": "DELETE",
+   "path": "/tool/gen/{tableIds}"
+  },
+  {
+   "http": "GET",
+   "path": "/tool/gen/preview/{tableId}"
+  },
+  {
+   "http": "GET",
+   "path": "/tool/gen/genCode/{tableName}"
+  },
+  {
+   "http": "GET",
+   "path": "/tool/gen/batchGenCode"
+  },
+  {
+   "http": "GET",
+   "path": "/test/user/test/user"
+  },
+  {
+   "http": "GET",
+   "path": "/test/user/list"
+  },
+  {
+   "http": "GET",
+   "path": "/test/user/{userId}"
+  },
+  {
+   "http": "POST",
+   "path": "/test/user/save"
+  },
+  {
+   "http": "PUT",
+   "path": "/test/user/update"
+  },
+  {
+   "http": "DELETE",
+   "path": "/test/user/{userId}"
+  },
+  {
+   "http": "GET",
+   "path": "/statistics/tuition/statistics/tuition"
+  },
+  {
+   "http": "GET",
+   "path": "/statistics/tuition/list"
+  },
+  {
+   "http": "GET",
+   "path": "/statistics/tuition/timeNum"
+  },
+  {
+   "http": "GET",
+   "path": "/statistics/tuition/purchase"
+  },
+  {
+   "http": "GET",
+   "path": "/statistics/renewal/statistics/renewal"
+  },
+  {
+   "http": "GET",
+   "path": "/statistics/renewal/list"
+  },
+  {
+   "http": "POST",
+   "path": "/base/access/reg"
+  },
+  {
+   "http": "POST",
+   "path": "/base/access/notify"
+  },
+  {
+   "http": "GET",
+   "path": "/base/access/info"
+  },
+  {
+   "http": "GET",
+   "path": "/educenter/student/getAccount/1"
+  },
+  {
+   "http": "POST",
+   "path": "/educenter/renewError/reminder"
+  },
+  {
+   "http": "POST",
+   "path": "/base/campus/checkLatAndLng"
+  },
+  {
+   "http": "POST",
+   "path": "/getOpenid"
+  }
+ ]
+}

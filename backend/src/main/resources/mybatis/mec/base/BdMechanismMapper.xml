@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 社区版（OS008）收口：删除平台审核/多机构列表/机构入驻数统计三段 SQL，
+     并去掉 queryMechanismInFoById 对 bd_platform_personnel 的 JOIN（社区版不建该表）。 -->
+<mapper namespace="com.zhenshu.mapper.base.BdMechanismMapper">
+
+    <sql id="Base_Column_List">
+        `id`, `name`, `phone_num`, `license_code`, `license`, `permit_code`,`invite_code`,
+            `permit`, `logo`, `create_by`, `create_time`, `update_by`, `update_time`, `is_delete`,`status`,`audited_time`,`charge_name`   </sql>
+
+    <select id="queryMechanismInFoById" resultType="com.zhenshu.jianxue.mec.base.domain.bo.BdMechanismBO"
+            parameterType="Long">
+        SELECT mec.`id`,
+               mec.`name`,
+               mec.`phone_num`,
+               mec.`license_code`,
+               mec.`license`,
+               mec.`permit_code`,
+               mec.`refuse_reason`,
+               mec.`invite_code`,
+               mec.`permit`,
+               mec.`logo`,
+               mec.`create_by`,
+               mec.`create_time`,
+               mec.`update_by`,
+               mec.`update_time`,
+               mec.`is_delete`,
+               mec.`status`,
+               mec.`audited_time`,
+               mec.`charge_name`,
+               mec.`main_img`
+        FROM bd_mechanism mec
+        WHERE mec.is_delete = 0
+          AND mec.`id` = #{id}
+    </select>
+
+</mapper>

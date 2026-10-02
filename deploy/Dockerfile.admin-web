@@ -1,0 +1,29 @@
+# =====================================================================
+# 云朵教务社区版 · PC 管理后台镜像（构建 + Nginx 托管，OS014）
+# 构建上下文 = 候选包根目录（community-edition/），COPY 路径带 admin-web/ 前缀。
+# =====================================================================
+
+# ---- 构建阶段：Node 22 + vue-cli（webpack 4） ----
+ARG NODE_IMAGE=node:22-alpine
+FROM ${NODE_IMAGE} AS build
+
+WORKDIR /src
+
+# 候选包内没有 package-lock.json，因此用 npm install；有锁文件时它同样适用
+COPY admin-web/package.json ./package.json
+RUN npm install --no-audit --no-fund
+
+COPY admin-web/ ./
+# 关键：webpack 4 在 Node 22 下需要老 OpenSSL 提供器，否则报 ERR_OSSL_EVP_UNSUPPORTED
+# （OS010 已在本地踩过，见 outputs/open-source-review/OS010/review.md）
+ENV NODE_OPTIONS=--openssl-legacy-provider
+RUN npm run build:prod
+
+# ---- 运行阶段：Nginx 只暴露「前端静态资源」与「/api/ 反代」 ----
+ARG NGINX_IMAGE=nginx:1.27-alpine
+FROM ${NGINX_IMAGE}
+
+COPY deploy/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /src/dist /usr/share/nginx/html
+
+EXPOSE 80

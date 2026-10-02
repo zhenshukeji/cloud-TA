@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhenshu.mapper.educenter.BdClassMapper">
+
+    <sql id="Base_Column_List">
+        `id`, `mec_id`, `campus_id`, `has_class`, `have_class`,  `bishop_teacher_id`, `help_teacher_id`, `sum_students`, `exist_students`, `class_course_id`, `is_delete`, `class_type`, `class_state`, `create_time`, `create_by`, `update_time`, `update_by`    </sql>
+
+    <update id="updateClsCourseName" parameterType="com.zhenshu.mapper.domain.educenter.BdClass">
+        UPDATE bd_class
+        set course_name = #{courseName}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectByCourseId" parameterType="Long" resultType="com.zhenshu.mapper.domain.educenter.BdClass">
+        SELECT cls.*
+        from bd_course cour
+                 LEFT JOIN bd_class cls ON cls.class_course_id = cour.id
+        WHERE cour.id = #{courseId}
+    </select>
+
+    <select id="getClassList" resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.BdClassBO"
+            parameterType="com.zhenshu.jianxue.mec.educenter.domain.vo.BdClassVO">
+        SELECT
+        a.id,
+        a.class_name,
+        a.class_state,
+        d.course_name,
+        b.`name` help_teacher_name,
+        c.`name` bishop_teacher_name,
+        a.sum_students,
+        a.exist_students,
+        a.has_class,
+        a.have_class,
+        a.class_type,
+        a.help_teacher_id,
+        a.bishop_teacher_id,
+        a.class_course_id
+        FROM
+        bd_class a
+        LEFT JOIN bd_teacher b ON a.help_teacher_id = b.id
+        LEFT JOIN bd_teacher c ON a.bishop_teacher_id = c.id
+        LEFT JOIN bd_course d ON a.class_course_id = d.id
+        WHERE
+        a.mec_id = #{mecId}
+        AND a.campus_id = #{campusId}
+        AND a.is_delete = 0
+        AND a.class_state = 0
+        <if test="classType != null">
+            AND a.class_type = #{classType}
+        </if>
+        <if test="className != null and className != '' ">
+            and a.class_name like CONCAT('%',#{className},'%')
+        </if>
+        <if test="classState != null">
+            and a.class_state = #{classState}
+        </if>
+        <if test="helpTeacherName != null and helpTeacherName != '' ">
+            and b.`name` like CONCAT('%',#{helpTeacherName},'%')
+        </if>
+        <if test="bishopTeacherName != null and bishopTeacherName != ''">
+            and c.`name` like CONCAT('%',#{bishopTeacherName},'%')
+        </if>
+        <if test="courseName != null and courseName != '' ">
+            and d.course_name like CONCAT('%',#{courseName},'%')
+        </if>
+        ORDER BY
+        a.create_time DESC
+        <!-- 防止因为排序相同的东西，自由排序导致分页出问题 -->
+        , a.id DESC
+    </select>
+
+    <select id="selectClassBySchoolTimeTable" resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.BdClassBO"
+            parameterType="com.zhenshu.jianxue.mec.educenter.domain.vo.BdClassVO">
+        SELECT
+        cls.id,
+        cls.class_name,
+        cou.course_name
+        FROM
+        bd_class cls
+        LEFT JOIN bd_course cou ON cls.class_course_id = cou.id
+        WHERE
+        cls.is_delete = 0
+        AND cls.mec_id = #{mecId}
+        AND cls.campus_id = #{campusId}
+        AND cls.class_state = 0
+        <if test="className != null and className != '' ">
+            and cls.class_name like CONCAT('%',#{className},'%')
+        </if>
+        ORDER BY
+        cls.create_time DESC
+        <!-- 防止因为排序相同的东西，自由排序导致分页出问题 -->
+        , cls.id DESC
+    </select>
+
+    <select id="getTotalTaught" resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.BdClassBO">
+        SELECT
+        bishop_teacher_id,
+        sum( exist_students ) taught_stu_num
+        FROM
+        bd_class cls
+        WHERE
+        bishop_teacher_id IN
+        <foreach collection="teacherIdList" index="index" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+
+        GROUP BY
+        bishop_teacher_id;
+    </select>
+    <select id="getClassData" parameterType="com.zhenshu.jianxue.mec.statistics.domain.vo.BdClassDetailVO"
+            resultType="com.zhenshu.jianxue.mec.statistics.domain.bo.ClassDetailDataBO">
+        SELECT
+        a.id,
+        a.class_name,
+        bt.`name` bishop_teacher_name,
+        a.sum_students,
+        a.exist_students,
+        a.bishop_teacher_id,
+        IF
+        ( bc.not_arrived IS NULL, 0, bc.not_arrived ) not_arrived,
+        IF
+        ( bc.leave_num IS NULL, 0, bc.leave_num ) leave_num,
+        IF
+        ( bc.late_num IS NULL, 0, bc.late_num ) late_num,
+        IF
+        ( bc.actually_num IS NULL, 0, bc.actually_num ) actually_num
+        FROM
+        bd_class a
+        LEFT JOIN bd_teacher bt ON a.bishop_teacher_id = bt.id
+        LEFT JOIN (
+        SELECT
+        class_id,
+        sum( IF ( type = 0, 1, 0 ) ) actually_num,
+        sum( IF ( type = 1, 1, 0 ) ) late_num,
+        sum( IF ( type = 2 OR type = 4, 1, 0 ) ) leave_num,
+        sum( IF ( type = 3, 1, 0 ) ) not_arrived
+        FROM
+        bd_call_record
+        where
+        is_delete = 0
+        GROUP BY
+        class_id
+        ) bc ON a.id = bc.class_id
+        WHERE
+        a.mec_id = #{mecId}
+        AND a.campus_id = #{campusId}
+        AND a.is_delete = 0
+        AND a.class_state = 0
+        <if test="className != null and className != '' ">
+            and a.class_name like CONCAT('%',#{className},'%')
+        </if>
+        <if test="bishopTeacherName != null and bishopTeacherName != '' ">
+            and bt.`name` like CONCAT('%',#{bishopTeacherName},'%')
+        </if>
+        ORDER BY
+        a.create_time DESC
+        <!-- 防止因为排序相同的东西，自由排序导致分页出问题 -->
+        , a.id DESC
+    </select>
+
+    <select id="getClassesByTeacher" resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.BdTeacherBO">
+        SELECT
+        GROUP_CONCAT( class_name ) bishop_classes,
+        bishop_teacher_id id
+        FROM
+        bd_class
+        WHERE
+        bishop_teacher_id IN
+        <foreach item="id" collection="idList" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND is_delete = 0
+        AND class_state = 0
+        GROUP BY
+        bishop_teacher_id
+    </select>
+
+    <select id="selectStuNumByClsIds" resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.BdClassBO">
+        SELECT
+        class_name,
+        id,
+        sum_students,
+        exist_students
+        FROM
+        bd_class
+        WHERE
+        id IN
+        <foreach item="id" collection="classIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        and is_delete = 0
+    </select>
+
+    <select id="getClassInfoByClassIds" resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.BdClassBO">
+        SELECT
+        cls.id,
+        cou.color course_color ,
+        bis.`name` bishop_teacher_name,
+        help_tea.name help_teacher_name,
+        cls.exist_students,
+        cls.sum_students
+        FROM
+        bd_class cls
+        LEFT JOIN bd_course cou ON cou.id = cls.class_course_id
+        LEFT JOIN bd_teacher bis ON cls.bishop_teacher_id = bis.id
+        LEFT JOIN bd_teacher help_tea ON cls.help_teacher_id = help_tea.id
+        WHERE
+        cls.id IN
+        <foreach item="id" collection="classIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        and cls.is_delete = 0
+    </select>
+
+    <select id="selectClassDetailById" resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.BdClassBO">
+        SELECT cls.id,
+               cls.id,
+               cls.mec_id,
+               cls.campus_id,
+               cls.has_class,
+               cls.have_class,
+               cls.bishop_teacher_id,
+               cls.help_teacher_id,
+               cls.sum_students,
+               cls.exist_students,
+               cls.class_name,
+               cls.class_course_id,
+               cls.version,
+               cls.is_delete,
+               cls.class_type,
+               cls.class_state,
+               cls.create_time,
+               cls.create_by,
+               cls.update_time,
+               cls.update_by,
+               cou.course_name course_name,
+               bis.`name` bishop_teacher_name,
+               help_tea.name help_teacher_name
+        FROM bd_class cls
+                 LEFT JOIN bd_course cou ON cou.id = cls.class_course_id
+                 LEFT JOIN bd_teacher bis ON cls.bishop_teacher_id = bis.id
+                 LEFT JOIN bd_teacher help_tea ON cls.help_teacher_id = help_tea.id
+        WHERE cls.id = #{classId}
+    </select>
+
+    <update id="incrHasClass" parameterType="java.lang.Long">
+        UPDATE bd_class SET has_class = has_class + 1 WHERE id = #{id}
+    </update>
+</mapper>

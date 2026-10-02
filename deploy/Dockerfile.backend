@@ -1,0 +1,46 @@
+# =====================================================================
+# 云朵教务社区版 · 后端镜像（OS014）
+# 构建上下文 = 候选包根目录（community-edition/），因此 COPY 路径带 backend/ 前缀。
+# 构建命令由 docker-compose.yml 负责：build.context=.. , build.dockerfile=deploy/Dockerfile.backend
+# =====================================================================
+
+# ---- 构建阶段：Maven + JDK 8（与 backend/pom.xml 的 java.version=1.8 一致） ----
+ARG MAVEN_IMAGE=maven:3.9-eclipse-temurin-8
+FROM ${MAVEN_IMAGE} AS build
+
+WORKDIR /src
+
+# 先只拷 pom，利用层缓存把依赖下载与源码改动解耦
+COPY backend/pom.xml ./pom.xml
+RUN mvn -B -q -DskipTests dependency:go-offline || true
+
+COPY backend/src ./src
+# 说明：pom 里 <skipTests>true</skipTests> 是打包提速用的，这里显式再关一次，
+#      避免「镜像里其实没跑测试」的误解（社区版测试见 OS012，单独跑）。
+RUN mvn -B -q clean package -DskipTests \
+    && cp target/jianxue.jar /src/app.jar
+
+# ---- 运行阶段：只带 JRE ----
+ARG JRE_IMAGE=eclipse-temurin:8-jre-alpine
+FROM ${JRE_IMAGE}
+
+# 非 root 运行
+RUN addgroup -S community && adduser -S -G community community
+
+WORKDIR /app
+COPY --from=build /src/app.jar /app/app.jar
+
+# 上传目录（compose 用命名卷挂到 /data/uploads）
+RUN mkdir -p /data/uploads && chown -R community:community /app /data
+
+USER community
+
+ENV SERVER_PORT=8080 \
+    UPLOAD_ROOT=/data/uploads \
+    SPRING_PROFILES_ACTIVE=docker \
+    TZ=Asia/Shanghai
+
+EXPOSE 8080
+
+# 与本地验收时一致的启动方式（OS011/OS013 都是 java -jar target/jianxue.jar）
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "-jar", "/app/app.jar"]

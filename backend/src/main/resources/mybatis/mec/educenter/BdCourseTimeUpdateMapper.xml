@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhenshu.mapper.educenter.BdCourseTimeUpdateMapper">
+
+    <sql id="Base_Column_List">
+        `id`, `mec_id`, `campus_id`, `student_id`, `course_time_id`, `course_id` , `change_type`, `num`, `reason`, `type`, `is_delete`, `create_by`, `create_time`, `update_by`, `update_time`    </sql>
+
+    <select id="selectListByStudentId" resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.UpCouInfoStuBO">
+        select bc.course_name,
+        if(bctu.type = 1, if (bctu.change_type = 0, concat("新增", bctu.num, "课次"), concat("减少", bctu.num, "课次")), concat("手动修改总课次为", bctu.num)) operation ,
+        bctu.reason ,
+        su.nick_name operation_name
+        from bd_course_time_update bctu
+        left join bd_course bc on bc.id = bctu.course_id
+        left join sys_user su on su.user_id = bctu.create_by
+        where bctu.student_id = #{studentId} and bctu.type in (1 , 5)
+        order by bctu.create_time desc
+        <!-- 防止因为排序相同的东西，自由排序导致分页出问题 -->
+        , bctu.id desc
+    </select>
+
+</mapper>

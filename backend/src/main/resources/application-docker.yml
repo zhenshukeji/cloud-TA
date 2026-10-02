@@ -1,0 +1,72 @@
+# Docker 环境配置 — 通过环境变量注入
+server:
+  port: ${BACK_SERVER_PORT:8106}
+  servlet:
+    context-path: /
+  tomcat:
+    uri-encoding: UTF-8
+    max-threads: 400
+    min-spare-threads: 20
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    druid:
+      url: jdbc:mysql://${MYSQL_HOST:mysql}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:jian_xue}?useUnicode=true&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true
+      username: ${MYSQL_USER:root}
+      password: ${MYSQL_PASSWORD:}
+      initialSize: 5
+      minIdle: 5
+      maxActive: 100
+      maxWait: 60000
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      maxEvictableIdleTimeMillis: 900000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      # 非 dev 环境关闭 Druid 监控台，避免数据库/SQL 明细被匿名暴露
+      stat-view-servlet:
+        enabled: false
+  redis:
+    host: ${REDIS_HOST:redis}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+    # 逻辑库：兼容两种写法（compose 用 REDIS_DB，env.local/community profile 用 REDIS_DATABASE）
+    database: ${REDIS_DB:${REDIS_DATABASE:12}}
+    # 应用级 key 前缀（OS014）：同时作用于登录令牌 key 与锁 key，
+    # 多实例共用一个 Redis 时靠它隔离。
+    cache_name: ${REDIS_CACHE_NAME:yunduo_community}
+    # 家长端内容推荐缓存前缀。社区版没有家长端，这两个 key 只会在课程增删时被 del 一次
+    # （删不存在的 key 是 no-op）；但 CacheKey 是 @Value 硬注入，本文件缺了它**整个 profile
+    # 都起不来**（OS014 实测：Could not resolve placeholder 'spring.redis.cache_student_name'）。
+    cache_student_name: ${REDIS_CACHE_STUDENT_NAME:yunduo_community_student}
+    timeout: 10s
+    lettuce:
+      pool:
+        # 连接池中的最小空闲连接
+        min-idle: 0
+        # 连接池中的最大空闲连接
+        max-idle: 8
+        # 连接池的最大数据库连接数
+        max-active: 8
+        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1ms
+    # OS014：原 docker profile 缺这一整段（无默认 @Value 硬注入），导致该 profile
+    # **从来就没能启动过**；由 os014-profile-check.py 全量对表后补齐。
+    jredis:
+      # 单位毫秒
+      timeout: 10000
+      max-wait: -1
+
+# token 配置（通过环境变量注入，默认值与 application.yml 一致）
+token:
+  header: Authorization
+  secret: ${TOKEN_SECRET}
+  expireTime: ${TOKEN_EXPIRE_TIME:300}
+
+# 社区版（OS011）：不提供任何云对象存储 / 短信配置，上传一律走本地持久卷
+zhenshu:
+  profile: ${UPLOAD_ROOT:/data/uploads}

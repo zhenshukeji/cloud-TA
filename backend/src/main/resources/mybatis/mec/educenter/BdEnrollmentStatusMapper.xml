@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhenshu.mapper.educenter.BdEnrollmentStatusMapper">
+
+    <select id="enrollmentList" parameterType="com.zhenshu.jianxue.mec.educenter.domain.vo.EnrollmentStatusVO"
+            resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.EnrollmentStatusBO">
+        SELECT
+            stu.student_name studentName <!--"学员名称"-->,
+            stu.students_phone phone <!--"手机号"-->,
+            c_time.total_number total <!--"总课时"-->,
+            c_time.total_number - c_time.remaining_number number <!--"消课时"-->,
+            c_time.remaining_number remainNumber <!--"剩余课时"-->,
+            c.course_name courseName <!--课程名称-->,
+            cls_info.class_name className <!--""班级名称""-->
+        FROM bd_student stu
+            RIGHT JOIN bd_course_time c_time ON c_time.student_id = stu.id <!--# 查出该学员的课时信息 -->
+            LEFT JOIN bd_course c ON c_time.course_id = c.id  <!--#查出课时信息对应的课程名称 -->
+            LEFT JOIN (
+                    SELECT
+                    cls.class_name class_name,
+                    stu_cls.student_id student_id,
+                    stu_cls.class_id class_id,
+                    cls.class_course_id class_course_id
+                    FROM
+                    bd_class cls,
+                    bd_student_class stu_cls
+                    WHERE
+                    stu_cls.class_id = cls.id
+                    AND stu_cls.is_delete = 0
+                    AND stu_cls.mec_id = #{mecId}
+                    AND stu_cls.campus_id = #{campusId}
+                ) cls_info <!-- 查出所有的班级信息，以及学员和班级之间的关联-->
+                ON stu.id = cls_info.student_id AND c.id = cls_info.class_course_id  <!-- #根据学员的课程id 和学员的学生id ，筛选出学员课程的对应班级-->
+        WHERE
+            stu.is_delete = 0 <!--#只查出未删除的信息--> and stu.mec_id = #{mecId} and stu.campus_id = #{campusId}
+            AND c_time.is_delete = 0
+            AND c.is_delete = 0
+            AND cls_info.class_name IS NOT NULL
+            AND cls_info.class_name != ''
+        <if test="studentName!=null">
+                and stu.student_name like CONCAT('%',#{studentName},'%')
+            </if>
+            <if test="phone!=null">
+                and stu.students_phone like CONCAT('%',#{phone},'%')
+            </if>
+            <if test="courseName!=null">
+                and c.course_name like CONCAT('%',#{courseName},'%')
+            </if>
+            <if test="className!=null">
+                and cls_info.class_name like CONCAT('%',#{className},'%')
+            </if>
+        ORDER BY
+            stu.create_time DESC
+            <!-- 防止因为排序相同的东西，自由排序导致分页出问题 -->
+            , stu.id desc
+    </select>
+
+</mapper>

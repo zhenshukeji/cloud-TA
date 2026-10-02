@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhenshu.mapper.educenter.BdStudentClassMapper">
+
+    <sql id="Base_Column_List">
+        `id`, `mec_id`, `campus_id`, `student_id`, `class_id`, `have_time`, `is_delete`, `create_time`, `create_by`, `update_time`, `update_by`
+    </sql>
+
+    <select id="selectStudentByClass" parameterType="com.zhenshu.jianxue.mec.educenter.domain.vo.BdClassVO"
+            resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.BdStudentBO">
+        select
+        s.mec_id ,s.campus_id,school_name,students_phone,s.id, student_name , ct.remaining_number, ct.total_number,
+        s.register_time, s.create_time
+        from
+        bd_student s left join bd_course_time ct on s.id = ct.student_id and ct.course_id = #{classCourseId}
+        where
+        s.id IN ( SELECT student_id FROM bd_student_class WHERE class_id = #{id} and is_delete = 0 ORDER BY create_time
+        DESC )
+        AND s.is_delete = 0
+        <if test="studentName != null and studentName != '' ">
+            and student_name like CONCAT('%',#{studentName},'%')
+        </if>
+    </select>
+
+    <select id="selectStudentByClassCount" parameterType="com.zhenshu.jianxue.mec.educenter.domain.vo.BdStudentClassVO"
+            resultType="java.lang.Integer">
+        SELECT
+        count(id)
+        FROM
+        bd_student
+        WHERE
+        id IN ( SELECT student_id FROM bd_student_class WHERE class_id = #{classId} and is_delete = 0)
+        AND is_delete = 0
+        <if test="studentName != null and studentName != '' ">
+            and student_name like CONCAT('%',#{studentName},'%')
+        </if>
+    </select>
+
+    <select id="selectClassByStudentIds" resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.BdStudentClassBO">
+        SELECT
+        s_c.student_id studentId,
+        c.class_name className
+        FROM
+        bd_student_class s_c
+        LEFT JOIN bd_class c ON s_c.class_id = c.id
+        WHERE
+        s_c.is_delete = 0
+        AND s_c.student_id IN
+        <foreach collection="studentIdList" index="index" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND s_c.mec_id = #{mecId}
+        AND s_c.campus_id = #{campusId}
+        ORDER BY
+        s_c.student_id
+    </select>
+
+    <select id="selectStuCountByClsIds" resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.BdStudentClassBO">
+        SELECT
+        count( id ) total_stu,
+        class_id
+        FROM
+        bd_student_class
+        WHERE
+        class_id IN
+        <foreach collection="classIds" index="index" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        GROUP BY
+        class_id
+    </select>
+    <select id="getStudentByClassIdFilterAskLeave"
+            resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.BdStudentClassBO">
+        SELECT sc.mec_id,
+               sc.campus_id,
+               sc.student_id,
+               stu.students_phone,
+               stu.student_name,
+               bc.class_name,
+               min.wechat_subscribe_openid,
+               cou.id          course_id,
+               cou.course_name course_name,
+               cam.name        campus_name,
+               mec.name        mec_name
+        FROM bd_student_class sc
+                 LEFT JOIN bd_student stu on sc.student_id = stu.id
+                 LEFT JOIN bd_class bc on sc.class_id = bc.id
+                 LEFT JOIN bd_course cou on bc.class_course_id = cou.id
+                 LEFT JOIN min_login min on stu.students_phone = min.phone
+                 LEFT JOIN bd_campus cam on sc.campus_id = cam.id
+                 LEFT JOIN bd_mechanism mec on sc.mec_id = mec.id
+        WHERE sc.class_id = #{classId}
+          AND sc.is_delete = 0
+          AND student_id NOT IN (
+            SELECT vac.student_id
+            FROM bd_ask_leave vac
+                     LEFT JOIN bd_student stu ON vac.student_id = stu.id
+            WHERE vac.type = 1
+              AND (
+                    (#{clsEndTime} BETWEEN vac.start_time AND off_time) OR
+                    (#{clsStartTime} &gt; vac.start_time AND #{clsEndTime} &lt; off_time) OR
+                    (#{clsStartTime} BETWEEN vac.start_time AND off_time))
+              AND vac.is_delete = 0)
+    </select>
+
+    <select id="getAllStudentByClassId" resultType="java.lang.String">
+        SELECT stu.student_name
+        FROM bd_student_class sc
+                 LEFT JOIN bd_student stu on sc.student_id = stu.id
+        WHERE sc.class_id = #{classId}
+          AND sc.is_delete = 0
+    </select>
+
+    <select id="getStudentsByClassId"
+            resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.BdStudentClassBO">
+        SELECT
+        sc.id, sc.mec_id, sc.campus_id, sc.student_id, sc.class_id, sc.have_time, sc.is_delete, sc.create_time,
+        sc.create_by, sc.update_time, sc.update_by
+        FROM bd_student_class sc
+        LEFT JOIN bd_student stu on sc.student_id = stu.id
+        WHERE sc.class_id = #{classId}
+        <if test="studentName != null and studentName != ''">
+            stu.student_name LIKE CONCAT('%', #{studentName}, '%')
+        </if>
+        AND sc.is_delete = 0
+    </select>
+</mapper>

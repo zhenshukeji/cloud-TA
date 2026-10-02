@@ -1,0 +1,25 @@
+# =====================================================================
+# Docker 构建上下文忽略（OS014）
+# 上下文是候选包根目录，必须把体积大、与镜像无关的目录排除，
+# 否则 admin-web/node_modules（本地为构建 robocopy 过来的）会把上下文撑到数百 MB。
+# =====================================================================
+.git
+.gitignore
+.gitattributes
+.dockerignore
+MANIFEST.sha256.json
+MANIFEST.sha256.txt
+
+# 依赖与构建产物
+**/node_modules
+**/dist
+**/target
+**/__pycache__
+
+# 运行期产物（不进镜像）
+backend/file
+backend/logs
+
+# 本地环境文件（绝不进镜像）
+deploy/.env
+*.env.local

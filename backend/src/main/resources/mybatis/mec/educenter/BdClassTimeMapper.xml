@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhenshu.mapper.educenter.BdClassTimeMapper">
+
+    <sql id="Base_Column_List">
+        `id`, `mec_id`, `campus_id`, `class_id`, `week_day`, `cls_start_time`, `cls_end_time`, `is_delete`, `create_time`, `create_by`, `update_time`, `update_by`    </sql>
+
+    <select id="selectAll" parameterType="com.zhenshu.jianxue.mec.educenter.domain.vo.ClassTimeVO"
+            resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.BdClassTimeBO">
+        SELECT
+        ct.*,
+        cls.class_name className,
+        cls.class_course_id courseId,
+        course.course_name
+        FROM
+        bd_class_time ct
+        LEFT JOIN bd_class cls ON ct.class_id = cls.id
+        LEFT JOIN bd_course course ON cls.class_course_id = course.id
+        <where>
+            cls.class_state = 0 and cls.is_delete = 0 and ct.is_delete = 0
+            #查询校区课表的条件
+            <if test="mecId != null and mecId != '' ">
+                and ct.mec_id = #{mecId}
+            </if>
+            <if test="campusId != null and campusId != '' ">
+                and ct.campus_id = #{campusId}
+            </if>
+            # 查询哪一天的条件
+            <if test="weekday != null">
+                and ct.week_day = #{weekday}
+            </if>
+            # 模糊查询
+            <if test="className != null and className != '' ">
+                and cls.class_name like CONCAT('%',#{className},'%')
+            </if>
+            <if test="courseName != null and courseName != '' ">
+                and course.course_name like CONCAT('%',#{courseName},'%')
+            </if>
+            <if test="classId != null">
+                and ct.class_id = #{classId}
+            </if>
+        </where>
+        ORDER BY
+        ct.week_day ASC,
+        ct.cls_end_time ASC
+    </select>
+    <select id="selectByTimeTable" resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.BdClassTimeBO">
+        SELECT
+        ct.*,
+        cls.class_name className,
+        cls.class_course_id courseId,
+        course.course_name ,
+        bis.`name` bishop_teacher_name,
+        help.`name` help_teacher_name ,
+        cls.sum_students sum_students ,
+        cls.exist_students exist_students ,
+        course.color course_color
+        FROM
+        bd_class_time ct
+        LEFT JOIN bd_class cls ON ct.class_id = cls.id
+        LEFT JOIN bd_course course ON cls.class_course_id = course.id
+        LEFT JOIN bd_teacher bis ON cls.bishop_teacher_id = bis.id
+        LEFT JOIN bd_teacher help ON cls.help_teacher_id = help.id
+        <where>
+            cls.class_state = 0 and cls.is_delete = 0 and ct.is_delete = 0
+            and ct.mec_id = #{mecId}
+            and ct.campus_id = #{campusId}
+            <if test="weekDayList != null">
+                and ct.week_day in
+                <foreach collection="weekDayList" index="index" item="day" open="(" separator="," close=")">
+                    #{day}
+                </foreach>
+            </if>
+            <if test="classId != null">
+                and ct.class_id = #{classId}
+            </if>
+            <if test="className != null and className != '' ">
+                and cls.class_name like CONCAT('%',#{className},'%')
+            </if>
+            <if test="courseName != null and courseName != '' ">
+                and course.course_name like CONCAT('%',#{courseName},'%')
+            </if>
+        </where>
+        ORDER BY
+        ct.week_day ASC,
+        ct.cls_end_time ASC
+    </select>
+</mapper>

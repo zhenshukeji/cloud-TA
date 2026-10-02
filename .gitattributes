@@ -1,0 +1,14 @@
+# 云朵教务社区版 —— 字节级复现性保障
+#
+# 背景：本仓库以 MANIFEST.sha256.json 作为「文件级真值源」（逐文件 sha256）。
+# 但 Git 在 Windows 上经常带着 core.autocrlf=true（本机系统级 gitconfig 即为 true），
+# 检出时会把 LF 转成 CRLF —— 于是同一份提交在别人机器上算出的 sha256 与清单不符，
+# 「manifest 可复算」这条验收会莫名其妙地失败。
+#
+# 处置：对**所有**文件关闭行尾转换（-text = 按二进制看待，进出都不动一个字节）。
+# 代价是仓库内统一使用 LF；收益是「克隆出来的字节」恒等于「审计过的字节」。
+#
+# 验证方式见 outputs/open-source-review/OS009/git-publish.md：
+#   克隆到临时目录后重算 1000 条文件的 sha256，必须与 MANIFEST 逐条一致。
+
+* -text

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhenshu.mapper.educenter.BdCourseTimeMapper">
+
+    <sql id="Base_Column_List">
+        `id`, `student_id`, `mec_id`, `campus_id`, `course_id`, `total_number`, `remaining_number`, `is_delete`, `create_time`, `create_by`, `update_time`, `update_by`    </sql>
+
+    <select id="getRenewalWarnList" parameterType="com.zhenshu.jianxue.mec.educenter.domain.vo.BdRenewalWarnVO"
+            resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.BdRenewalWarnBO">
+        SELECT
+        stu.id student_id,
+        cou.id course_id,
+        stu.student_name,
+        stu.students_phone,
+        bcls.id class_id,
+        cou.course_name,
+        bct.total_number,
+        bct.remaining_number,
+        max( template.send_time ) send_time
+        FROM
+        bd_student_class bsc
+        left join bd_student stu on bsc.student_id = stu.id
+        LEFT JOIN bd_class bcls ON bsc.class_id = bcls.id
+        LEFT JOIN bd_course_time bct ON bsc.student_id = bct.student_id and bct.course_id = bcls.class_course_id
+        left join bd_course cou on bcls.class_course_id = cou.id
+        AND bct.course_id = bcls.class_course_id
+        LEFT JOIN bd_template_message template ON bct.course_id = template.course_id
+        AND template.student_id = bct.student_id
+        WHERE
+        bsc.is_delete = 0
+        AND bct.is_delete = 0
+        AND bsc.mec_id = #{mecId}
+        AND bsc.campus_id = #{campusId}
+        AND bct.remaining_number &lt; 6
+        <if test="studentName != null and  studentName != '' ">
+            and stu.student_name like concat('%',#{studentName},'%')
+        </if>
+        <if test="courseName != null and courseName != '' ">
+            and cou.course_name like concat('%',#{courseName},'%')
+        </if>
+        GROUP BY bct.id
+        ORDER BY bct.remaining_number
+    </select>
+
+    <select id="selectStudentInfo" parameterType="com.zhenshu.jianxue.mec.educenter.domain.vo.BdCourseTimeVO"
+            resultType="com.zhenshu.jianxue.mec.statistics.domain.bo.StudentInfoBO">
+        SELECT bs.student_name,
+        bs.id student_id ,
+        GROUP_CONCAT(bcl.class_name) class_names,
+        GROUP_CONCAT(bco.course_name) course_names
+        FROM bd_student_class bsc
+        JOIN bd_student bs ON bs.id = bsc.student_id
+        AND bs.is_delete = 0
+        AND bs.is_ordinary = 0
+        JOIN bd_class bcl ON bcl.id = bsc.class_id
+        AND bsc.is_delete = 0
+        JOIN bd_course bco ON bco.id = bcl.class_course_id
+        AND bsc.is_delete = 0
+        WHERE bsc.mec_id = #{mecId}
+        AND bsc.campus_id = #{campusId}
+        AND bsc.is_delete = 0
+        <if test="className != null and className != ''">
+            AND bcl.class_name like concat('%',#{className},'%')
+        </if>
+        <if test="courseName != null and courseName != ''">
+            AND bco.course_name like concat('%',#{courseName},'%')
+        </if>
+        GROUP BY student_id
+    </select>
+
+    <update id="minusOneIfEnough" parameterType="java.lang.Long">
+        UPDATE bd_course_time SET remaining_number = remaining_number - 1 WHERE id = #{id} AND remaining_number >= 1
+    </update>
+
+    <update id="addCourseTime">
+        UPDATE bd_course_time
+        SET remaining_number = remaining_number + #{num},
+            total_number = total_number + #{num},
+            update_time = NOW(),
+            update_by = #{userId}
+        WHERE id = #{id}
+    </update>
+
+    <update id="adjustCourseTime">
+        UPDATE bd_course_time
+        SET remaining_number = remaining_number + #{delta},
+            total_number = total_number + #{delta},
+            update_time = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <update id="changeTotalCourseTimeIfEnough">
+        UPDATE bd_course_time
+        SET total_number = #{num},
+            update_time = NOW()
+        WHERE id = #{id}
+          AND #{num} >= remaining_number
+    </update>
+
+    <update id="refundOneCourseTime">
+        UPDATE bd_course_time
+        SET remaining_number = remaining_number + 1,
+            update_time = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <update id="deductOneCourseTimeIfEnough">
+        UPDATE bd_course_time
+        SET remaining_number = remaining_number - 1,
+            update_time = NOW()
+        WHERE id = #{id}
+          AND remaining_number >= 1
+    </update>
+
+    <select id="selectActiveAccountForUpdate" resultType="com.zhenshu.mapper.domain.educenter.BdCourseTime">
+        SELECT <include refid="Base_Column_List"/>
+        FROM bd_course_time
+        WHERE student_id = #{studentId}
+          AND course_id = #{courseId}
+          AND is_delete = 0
+        FOR UPDATE
+    </select>
+</mapper>

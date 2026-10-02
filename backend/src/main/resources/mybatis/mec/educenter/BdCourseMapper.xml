@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhenshu.mapper.educenter.BdCourseMapper">
+
+    <sql id="Base_Column_List">
+        `id`, `mec_id`, `campus_id`, `amount_cny`, `paid_amount_cny`, `time_num`, `gift`, `course_name`, `subject`, `color`, `is_shelf`, `is_experience`, `introduction`, `is_delete`, `create_time`, `create_by`, `update_time`, `update_by` , `cover_image` , `min_cover_image`   </sql>
+
+    <select id="getStudentAttendance" resultType="com.zhenshu.jianxue.mec.statistics.domain.bo.StudentAttendanceBO">
+        SELECT class_course_id,
+               bco.course_name,
+               sum(IF(actually_num IS NULL, 0, actually_num)) actually_num,
+               sum(IF(late_num IS NULL, 0, late_num))         late_num,
+               sum(IF(leave_num IS NULL, 0, leave_num))       leave_num,
+               sum(IF(not_arrived IS NULL, 0, not_arrived))   not_arrived
+        FROM bd_class bc
+                 LEFT JOIN (
+            SELECT class_id,
+                   sum(IF(type = 0, 1, 0))             actually_num,
+                   sum(IF(type = 1, 1, 0))             late_num,
+                   sum(IF(type = 2 OR type = 4, 1, 0)) leave_num,
+                   sum(IF(type = 3, 1, 0))             not_arrived
+            FROM bd_call_record
+            WHERE is_delete = 0
+            GROUP BY class_id
+        ) bcr ON bcr.class_id = bc.id
+                 LEFT JOIN bd_course bco ON bco.id = bc.class_course_id
+        WHERE bc.mec_id = #{mecId}
+          and bc.campus_id = #{campusId}
+          and bc.is_delete = 0
+          and bc.class_state = 0
+        GROUP BY class_course_id
+    </select>
+
+    <select id="queryTheCourseOnTheShelves" parameterType="com.zhenshu.mapper.domain.educenter.BdCourse"
+            resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.BdCourseBO">
+        select
+        <include refid="Base_Column_List"/>
+        from bd_course bc
+        where bc.is_delete = 0 and bc.is_shelf = #{isShelf} and bc.mec_id = #{mecId} and bc.campus_id = #{campusId}
+    </select>
+
+</mapper>

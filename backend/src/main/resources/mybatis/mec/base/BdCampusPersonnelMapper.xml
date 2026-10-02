@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhenshu.mapper.base.BdCampusPersonnelMapper">
+
+    <sql id="Base_Column_List">
+        `id`, `mec_id`, `campus_id`, `type`, `name`, `phone`, `join_time`, `create_by`, `create_time`, `update_by`, `update_time`    </sql>
+
+    <select id="getDetailsList" resultType="com.zhenshu.jianxue.mec.base.domain.bo.BdCampusPersonnelBO"
+            parameterType="com.zhenshu.jianxue.mec.base.domain.vo.BdCampusPersonnelVO">
+    SELECT
+        sri.role_names,
+        bcp.*
+    FROM
+        bd_campus_personnel bcp
+        # 查到对应的登录人员信息
+        LEFT JOIN sys_user su ON su.user_type = 0
+        AND su.association_id = bcp.id
+        # 如果如果有传roleId的话，那么就说明只查拥有该角色的，所以可以用join，其他时候用left join 是为了避免没有分配角色的用户不展示出来
+        <if test="roleId != null">
+            JOIN
+        </if>
+        <if test="roleId == null">
+            LEFT JOIN
+        </if>
+        (
+    SELECT
+        GROUP_CONCAT( sr.role_name ) role_names,
+        sur.user_id
+    FROM
+        sys_user_role sur
+        JOIN sys_role sr ON sur.role_id = sr.role_id
+    WHERE
+        campus_id = #{campusId}
+        AND mec_id = #{mecId}
+        AND user_type = 0
+        AND sr.status = 0
+    <if test="roleId != null">
+        and sr.role_id = #{roleId}
+    </if>
+    GROUP BY
+        sur.user_id
+        # 通过登录人员关联权限表
+        ) sri ON sri.user_id = su.user_id
+    WHERE
+        bcp.mec_id = #{mecId}
+        AND bcp.campus_id = #{campusId}
+        AND bcp.is_delete = 0
+        # 只查询校区人员，不查询校区负责人
+        AND bcp.type = 1
+        # 对应sys_user中类型为校区人员的id
+        AND su.type = 1
+    <if test="phone != null and phone != ''">
+        and bcp.phone like concat("%", #{phone},"%")
+    </if>
+    ORDER BY create_time desc
+    <!-- 防止因为排序相同的东西，自由排序导致分页出问题 -->
+    , bcp.id DESC
+    </select>
+
+</mapper>

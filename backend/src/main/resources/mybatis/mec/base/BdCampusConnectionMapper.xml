@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhenshu.mapper.base.BdCampusConnectionMapper">
+
+    <sql id="Base_Column_List">
+        `id`, `mec_id`, `mec_personnel_id`, `campus_id`, `campus_name` , `create_by`, `create_time`, `update_by`, `update_time`, `is_delete`    </sql>
+
+    <select id="selectListByCampus" resultType="com.zhenshu.jianxue.mec.base.domain.bo.BdCampusConnectionBO"
+            parameterType="com.zhenshu.jianxue.mec.base.domain.vo.BdCampusConnectionVO">
+        SELECT
+        p.`name` mec_name,
+        p.phone mec_phone,
+        p.contact_number mec_contact_number,
+        c.id,
+        c.create_time,
+        sri.role_names
+        FROM
+        bd_campus_connection c
+        LEFT JOIN bd_mec_personnel p ON c.mec_personnel_id = p.id
+        <if test="roleId != null">
+            JOIN
+        </if>
+        <if test="roleId == null">
+            LEFT JOIN
+        </if>
+        (
+        SELECT
+        GROUP_CONCAT( sr.role_name ) role_names,
+        sur.user_id
+        FROM
+        sys_user_role sur
+        JOIN sys_role sr ON sur.role_id = sr.role_id
+        WHERE
+        campus_id = #{campusId}
+        AND mec_id = #{mecId}
+        AND user_type = 1
+        AND status = 0
+        <if test="roleId != null">
+            and sr.role_id = #{roleId}
+        </if>
+        GROUP BY
+        sur.user_id # 通过登录人员关联权限表
+        ) sri ON sri.user_id = c.id
+        WHERE
+        c.campus_id = #{campusId}
+        AND p.mec_id = #{mecId}
+        AND c.is_delete = 0
+        AND p.is_delete = 0
+        <if test="mecPhone != null and mecPhone != ''">
+            AND phone like concat('%', #{mecPhone}, '%')
+        </if>
+    </select>
+
+    <select id="selectByMecPersonnelId"
+            resultType="com.zhenshu.jianxue.mec.base.domain.bo.BdCampusConnectionBO">
+        SELECT con.id,
+               con.mec_id,
+               con.mec_personnel_id,
+               con.campus_id,
+               con.create_by,
+               con.create_time,
+               con.update_by,
+               con.update_time,
+               con.is_delete,
+               cam.`name` campus_name
+        FROM bd_campus_connection con
+                 LEFT JOIN bd_campus cam ON con.campus_id = cam.id
+        WHERE con.mec_personnel_id = #{mecPersonnelId}
+          AND con.is_delete = 0
+    </select>
+
+</mapper>

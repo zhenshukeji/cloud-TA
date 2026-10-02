@@ -1,0 +1,91 @@
+# 开发环境配置
+server:
+  # 服务器的HTTP端口，默认为8080
+  port: 8106
+  servlet:
+    # 应用的访问路径
+    context-path: /
+  tomcat:
+    # tomcat的URI编码
+    uri-encoding: UTF-8
+    # tomcat最大线程数，默认为200
+    max-threads: 800
+    # Tomcat启动初始化的线程数，默认值25
+    min-spare-threads: 30
+
+# 数据源配置
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    druid:
+      url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}?useUnicode=true&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&allowMultiQueries=true
+      username: ${MYSQL_USER}
+      password: ${MYSQL_PASSWORD}
+      # 初始连接数
+      initialSize: 10
+      # 最小连接池数量
+      minIdle: 10
+      # 最大连接池数量
+      maxActive: 250
+      # 配置获取连接等待超时的时间
+      maxWait: 600000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 300000
+      # 配置一个连接在池中最大生存的时间，单位是毫秒
+      maxEvictableIdleTimeMillis: 900000
+      # 配置检测连接是否有效
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      # 社区版（OS011）：Druid 控制台与 Web 统计一律关闭，避免 SQL 明细被匿名访问
+      webStatFilter:
+        enabled: false
+      statViewServlet:
+        enabled: false
+      filter:
+        stat:
+          enabled: true
+          # 慢SQL记录
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: true
+        wall:
+          config:
+            multi-statement-allow: true
+  # redis 配置
+  redis:
+    # 地址
+    host: ${REDIS_HOST}
+    # 端口，默认为6379
+    port: ${REDIS_PORT}
+    # 密码
+    password: ${REDIS_PASSWORD}
+    # 连接超时时间(单位毫秒)
+    timeout: 10s
+    lettuce:
+      pool:
+        # 连接池中的最小空闲连接
+        min-idle: 0
+        # 连接池中的最大空闲连接
+        max-idle: 8
+        # 连接池的最大数据库连接数
+        max-active: 8
+        # #连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1ms
+    jredis:
+      #单位毫秒
+      timeout: 10000
+      max-wait: -1
+    # 数据库
+    database: 10
+    # 缓存名
+    cache_student_name: jianxue_student
+    cache_name: jianxue
+
+# 社区版（OS011）：Swagger 一律关闭，不留「换个 profile 就打开」的公网测试面
+swagger:
+  enabled: false

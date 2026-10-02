@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhenshu.mapper.base.BdCampusMapper">
+
+    <sql id="Base_Column_List">
+        `id`, `name`, `address`, `mec_id` ,`province`,  `city`, `mgr_name`, `mgr_phone`,
+`latitude`, `latitude`, `is_member`, `member_end_time`, `is_delete`, `create_time` , `create_by`  , `update_time` , `update_by`    </sql>
+
+    <select id="getCampusInfoByMecId" resultType="com.zhenshu.jianxue.mec.base.domain.bo.BdCampusBO"
+            parameterType="com.zhenshu.jianxue.mec.base.domain.vo.BdCampusVO">
+        SELECT cam.id,
+        cam.mec_id,
+        cam.`name`,
+        cam.mgr_name,
+        cam.mgr_phone,
+        cam.is_member,
+        IF(cls.class_count IS NULL, 0, cls.class_count) class_count,
+        IF(stu.student_count IS NULL, 0, stu.student_count) student_count,
+        IF(tea.teacher_count IS NULL, 0, tea.teacher_count) teacher_count,
+        IF(cou.course_count IS NULL, 0, cou.course_count) course_count,
+        FROM bd_campus cam
+        <!-- 分组查询校区的未删除且未废弃班级数 -->
+        LEFT JOIN ( SELECT count(id) class_count, campus_id
+        FROM bd_class
+        WHERE is_delete = 0 AND class_state = 0
+        GROUP BY campus_id ) cls ON cam.id = cls.campus_id
+        <!-- 分组查询校区的未删除且为在读学生数 -->
+        LEFT JOIN ( SELECT count(id) student_count, campus_id
+        FROM bd_student
+        WHERE is_delete = 0 AND is_ordinary = 0
+        GROUP BY campus_id ) stu ON cam.id = stu.campus_id
+        <!-- 分组查询校区的未删除且未离职老师数 -->
+        LEFT JOIN ( SELECT count(id) teacher_count, campus_id
+        FROM bd_teacher
+        WHERE is_delete = 0 AND is_departure = 0
+        GROUP BY campus_id ) tea ON cam.id = tea.campus_id
+        <!-- 分组查询校区的未删除且上架课程数 -->
+        LEFT JOIN ( SELECT count(id) course_count, campus_id
+        FROM bd_course
+        WHERE is_delete = 0 AND is_shelf = 1
+        GROUP BY campus_id ) cou ON cam.id = cou.campus_id
+        WHERE cam.mec_id = #{mecId} and cam.is_delete = 0
+        <if test="name != null and name != ''">
+            AND cam.name LIKE CONCAT('%', #{name} ,'%')
+        </if>
+        <if test="mgrName != null and mgrName != ''">
+            AND cam.mgr_name LIKE CONCAT('%', #{mgrName} ,'%')
+        </if>
+        <if test="mgrPhone != null and mgrPhone != ''">
+            AND cam.mgr_phone LIKE CONCAT('%', #{mgrPhone} ,'%')
+        </if>
+        GROUP BY cam.id
+    </select>
+
+    <select id="selectBdCampusList" resultType="com.zhenshu.jianxue.mec.base.domain.bo.BdCampusBO">
+        SELECT
+        cam.`id`, cam.`name`, cam.`address`, cam.`mec_id` ,cam.`province`, cam.`city`, cam.`mgr_name`, cam.`mgr_phone`,cam.`mgr_contact_number`,
+        cam.`latitude`, cam.`latitude`, cam.`is_member`, cam.`member_end_time`, cam.`is_delete`,
+        cam.`create_time` , cam.`create_by` , cam.`update_time` , cam.`update_by`, su.nick_name create_by_name
+        FROM bd_campus cam
+        LEFT JOIN sys_user su on cam.create_by = su.user_id
+        WHERE is_delete = 0 AND mec_id = #{mecId}
+        <if test="name != null and name != ''">
+            AND cam.name LIKE CONCAT('%', #{name} ,'%')
+        </if>
+        <if test="mgrName != null and mgrName != ''">
+            AND cam.mgr_name LIKE CONCAT('%', #{mgrName} ,'%')
+        </if>
+        <if test="mgrPhone != null and mgrPhone != ''">
+            AND cam.mgr_phone LIKE CONCAT('%', #{mgrPhone} ,'%')
+        </if>
+        <if test="createByName != null and createByName != ''">
+            AND su.nick_name LIKE CONCAT('%', #{createByName} ,'%')
+        </if>
+        ORDER BY cam.`create_time` DESC
+        <!-- 防止因为排序相同的东西，自由排序导致分页出问题 -->
+        , cam.id DESC
+    </select>
+
+    <select id="selectBdCampusDetailById" resultType="com.zhenshu.jianxue.mec.base.domain.bo.BdCampusBO">
+        SELECT
+        cam.`id`, cam.`name`, cam.`address`, cam.`mec_id` ,cam.`province`, cam.`city`, cam.`mgr_name`, cam.`mgr_phone`,cam.`mgr_contact_number`,
+        cam.`latitude`, cam.`latitude`, cam.`is_member`, cam.`member_end_time`, cam.`is_delete`,
+        cam.`create_time` , cam.`create_by` , cam.`update_time` , cam.`update_by`, su.nick_name create_by_name, mec.name mec_name
+        FROM bd_campus cam
+        LEFT JOIN sys_user su on cam.create_by = su.user_id
+        LEFT JOIN bd_mechanism mec on cam.mec_id = mec.id
+        WHERE cam.is_delete = 0 AND cam.id = #{id}
+    </select>
+
+</mapper>

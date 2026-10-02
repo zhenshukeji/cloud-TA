@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhenshu.mapper.educenter.BdStudentMapper">
+
+    <sql id="Base_Column_List">
+        `id`, `mec_id`, `campus_id`, `student_name`, `students_phone`, `school_name`, `grade`, `age`, `openid`,
+        `address`, `parents_name`, `parents_phone`, `id_card`, `register_time`, `is_delete`,
+        `is_ordinary`, `create_time`, `create_by`, `update_time`, `update_by`
+    </sql>
+
+    <select id="getStudentListCount" parameterType="com.zhenshu.jianxue.mec.educenter.domain.vo.BdClassVO"
+            resultType="Integer">
+        SELECT
+        count(*)
+        FROM
+        bd_student
+        WHERE
+        id NOT IN ( SELECT student_id FROM bd_student_class WHERE class_id = #{id} and is_delete = 0 and student_id !=
+        '')
+        AND is_ordinary = 0
+        AND is_delete = 0
+        AND mec_id = #{mecId}
+        AND campus_id = #{campusId}
+        <if test="studentName != null and studentName != '' ">
+            and student_name like CONCAT('%',#{studentName},'%')
+        </if>
+    </select>
+
+    <select id="getStudentDetailByTeacher" resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.BdStudentBO"
+            parameterType="com.zhenshu.jianxue.mec.educenter.domain.vo.BdStudentVO">
+        SELECT
+        sc.mec_id,
+        sc.campus_id,
+        stu.id,
+        stu.student_name,
+        stu.students_phone,
+        stu.grade,
+        stu.school_name,
+        tea.id teacher_id,
+        tea.name teacher_name,
+        GROUP_CONCAT( cls.class_name ) classes
+        FROM bd_student_class sc
+        LEFT JOIN bd_student stu ON sc.student_id = stu.id
+        LEFT JOIN bd_class cls ON sc.class_id = cls.id
+        LEFT JOIN bd_teacher tea ON cls.bishop_teacher_id = tea.id
+        WHERE class_id IN (
+        SELECT id FROM bd_class WHERE is_delete = 0 and mec_id = #{mecId} and campus_id = #{campusId} and id != ''
+        <if test="teacherId != null">
+            and bishop_teacher_id = #{teacherId}
+        </if>
+        )
+        <if test="studentName != null and studentName != '' ">
+            and stu.student_name like CONCAT('%',#{studentName},'%')
+        </if>
+        <if test="studentsPhone != null and studentsPhone != '' ">
+            and stu.students_phone like CONCAT('%',#{studentsPhone},'%')
+        </if>
+        and sc.is_delete = 0
+        GROUP BY stu.id
+    </select>
+
+    <select id="selectCourseTimeDetailList" resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.CourseInfoStuBO">
+        select cou.course_name,
+               cls_info.class_name,
+               cr.id,
+               cr.total_number,
+               cr.remaining_number
+        from bd_course_time cr
+                 left join bd_student stu on stu.id = cr.student_id
+                 left join bd_course cou on cou.id = cr.course_id
+                 left join (
+            select cls.class_name      class_name,
+                   stu_cls.student_id  student_id,
+                   stu_cls.class_id    class_id,
+                   cls.class_course_id class_course_id
+            from bd_class cls,
+                 bd_student_class stu_cls
+            where stu_cls.class_id = cls.id
+              and stu_cls.student_id = #{studentId}
+              and stu_cls.is_delete = 0
+        ) cls_info on stu.id = cls_info.student_id and cr.course_id = cls_info.class_course_id
+        where cr.student_id = #{studentId}
+          and cr.is_delete = 0
+    </select>
+
+    <select id="getStudentList" parameterType="com.zhenshu.jianxue.mec.educenter.domain.vo.BdClassVO"
+            resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.BdStudentBO">
+        SELECT
+        id,student_name,students_phone,school_name,grade,age,is_delete,mec_id,campus_id,is_ordinary
+        FROM
+        bd_student
+        WHERE
+        id NOT IN ( SELECT student_id FROM bd_student_class WHERE class_id = #{id} and is_delete = 0 and student_id !=
+        '') <!--将在该班级的学生除去-->
+        AND is_ordinary = 0
+        AND is_delete = 0
+        AND mec_id = #{mecId}
+        AND campus_id = #{campusId}
+        <if test="studentName != null and studentName != '' ">
+            and student_name like CONCAT('%',#{studentName},'%')
+        </if>
+        ORDER BY create_time DESC , id DESC
+    </select>
+
+    <select id="getStudentClassDetail" resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.BdStudentBO"
+            parameterType="com.zhenshu.jianxue.mec.educenter.domain.vo.BdStudentVO">
+        SELECT
+        sc.student_id id,
+        stu.student_name,
+        GROUP_CONCAT( cls.class_name ) classes <!--以学生为分组，将分组好的班级名称进行拼接-->
+        FROM
+        bd_student_class sc
+        LEFT JOIN bd_student stu ON sc.student_id = stu.id
+        LEFT JOIN bd_class cls ON sc.class_id = cls.id
+        WHERE
+        cls.is_delete = 0
+        AND sc.is_delete = 0
+        AND stu.is_delete = 0
+        AND sc.mec_id = #{mecId}
+        AND sc.campus_id = #{campusId}
+        <if test="teacherId != null">
+            AND cls.bishop_teacher_id = #{teacherId} <!--登录身份为，只显示老师所教授的班级-->
+        </if>
+        <if test="id != null">
+            AND sc.student_id = #{id}
+        </if>
+        GROUP BY
+        stu.id
+    </select>
+
+    <select id="getStudentListByIds" resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.BdStudentBO">
+        SELECT
+        id,student_name,students_phone,school_name,grade,age,is_delete,mec_id,campus_id,is_ordinary
+        FROM
+        bd_student
+        WHERE
+        id IN
+        <foreach collection="stuIds" index="index" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND is_ordinary = 0
+        AND is_delete = 0
+    </select>
+
+    <select id="getStudentListByIdsWithScope" resultType="com.zhenshu.jianxue.mec.educenter.domain.bo.BdStudentBO">
+        SELECT
+        id,student_name,students_phone,school_name,grade,age,is_delete,mec_id,campus_id,is_ordinary
+        FROM
+        bd_student
+        WHERE
+        id IN
+        <foreach collection="stuIds" index="index" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND is_ordinary = 0
+        AND is_delete = 0
+        AND mec_id = #{mecId}
+        AND campus_id = #{campusId}
+    </select>
+
+    <select id="selectStudentExportList" resultType="com.zhenshu.jianxue.mec.educenter.domain.vo.StudentExportVO">
+        SELECT s.student_name      AS studentName,
+               s.students_phone    AS studentsPhone,
+               s.parents_name      AS parentsName,
+               s.parents_phone     AS parentsPhone,
+               GROUP_CONCAT(DISTINCT c.class_name)          AS classNames,
+               co.course_name      AS courseName,
+               ct.total_number     AS totalNumber,
+               ct.remaining_number AS remainingNumber,
+               (SELECT SUM(p.amount_cny) FROM bd_course_purchase p
+                 WHERE p.student_id = s.id AND p.course_id = co.id AND p.is_delete = 0) AS amountCnySum
+        FROM bd_student s
+        LEFT JOIN bd_student_class sc ON sc.student_id = s.id AND sc.is_delete = 0
+        LEFT JOIN bd_class c ON c.id = sc.class_id AND c.is_delete = 0
+        LEFT JOIN bd_course_time ct ON ct.student_id = s.id AND ct.is_delete = 0
+        LEFT JOIN bd_course co ON co.id = ct.course_id AND co.is_delete = 0
+        WHERE s.is_delete = 0
+          AND s.is_ordinary = 0
+          AND s.mec_id = #{mecId}
+          <if test="campusId != null">
+              AND s.campus_id = #{campusId}
+          </if>
+          <if test="studentName != null and studentName != ''">
+              AND s.student_name LIKE CONCAT('%', #{studentName}, '%')
+          </if>
+        GROUP BY s.id, co.id, ct.id
+        ORDER BY s.id, co.id
+    </select>
+</mapper>
