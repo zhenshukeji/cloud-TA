@@ -393,12 +393,3 @@ community-edition/
 ![23 · 录播课程：信息与状态，集中管理](docs/screenshots/deck/slide-23.png)
 ![26 · 更多模块与统计报表](docs/screenshots/deck/slide-26.png)
 ![27 · 家长进入机构，就能找到对应服务](docs/screenshots/deck/slide-27.png)
-
-### 14.3 商业版产品截图
-
-更多产品截图见 [cloud-TA 产品资料](https://gitee.com/zhenshukeji/cloud-TA/tree/master/doc)。
-
-| | |
-|---|---|
-| ![产品总览](https://gitee.com/zhenshukeji/cloud-TA/raw/master/doc/%E5%B9%BB%E7%81%AF%E7%89%871.PNG) | ![教务中心](https://gitee.com/zhenshukeji/cloud-TA/raw/master/doc/%E5%B9%BB%E7%81%AF%E7%89%872.PNG) |
-| ![家长端小程序](https://gitee.com/zhenshukeji/cloud-TA/raw/master/doc/%E5%B9%BB%E7%81%AF%E7%89%873.PNG) | ![数据统计](https://gitee.com/zhenshukeji/cloud-TA/raw/master/doc/%E5%B9%BB%E7%81%AF%E7%89%874.PNG) |
