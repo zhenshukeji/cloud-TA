@@ -31,7 +31,7 @@ mysqldump -h<host> -P<port> -u<user> -p --single-transaction --routines --trigge
 
 `--single-transaction` 保证 InnoDB 表的一致性快照，不需要停服。
 
-### 2.2 无 mysqldump 客户端时的等价脚本（OS024）
+### 2.2 无 mysqldump 客户端时的备份脚本
 
 `scripts/backup-db.py` 用纯 Python（pymysql）产出等价的逻辑备份（结构 + 全量数据，
 已正确排除 `bd_class_record.active_slot`、`bd_course_time.active_account` 等 STORED 生成列——
@@ -43,10 +43,9 @@ python scripts/backup-db.py --out backup-$(date +%Y%m%d-%H%M).sql
 ```
 
 恢复：在**独立空库**上回放备份文件（`mysql -h<host> -P<port> -u<user> -p <库名> < backup.sql`），
-恢复后按 §3 的行数/不变量对账。该脚本在 OS024 已完成「备份 → 独立空库恢复 → 49 张表逐表行数、
-课时余额/流水净值/报读金额合计对账一致」的验证（证据 `outputs/open-source-review/OS024/backup-verify.json`）。
+恢复后按 §3 的行数/不变量对账。
 
-### 2.2 上传目录
+### 2.3 上传目录
 
 ```bash
 # Compose：从一个临时容器里把命名卷打包出来
@@ -57,7 +56,7 @@ docker run --rm -v yunduo-community-uploads:/data -v "$PWD":/backup alpine \
 tar czf uploads-$(date +%Y%m%d).tar.gz -C "$UPLOAD_ROOT" .
 ```
 
-### 2.3 备份保留建议
+### 2.4 备份保留建议
 
 - 至少保留 **7 份日备 + 4 份周备**；
 - 每次升级前**额外**做一份，并单独命名（如 `pre-upgrade-<版本>`）；
@@ -93,7 +92,7 @@ docker compose --env-file deploy/.env -f deploy/docker-compose.yml start backend
 # 2) 拉新代码
 git pull
 
-# 3) 重新构建并滚动重启（初始化脚本是幂等的，重复执行安全）
+# 3) 重新构建并启动（提前安排维护窗口，不能视为零停机滚动发布）
 docker compose --env-file deploy/.env -f deploy/docker-compose.yml up -d --build
 
 # 4) 看日志与健康状态

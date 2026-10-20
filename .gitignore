@@ -1,15 +1,12 @@
 ######################################################################
 # 云朵教务社区版 —— 忽略规则
 #
-# 口径与 community-edition/MANIFEST.sha256.json 严格一致：
-# 只忽略「本就被排除在 MANIFEST 之外」的运行期与构建产物，
-# 不忽略任何已审计入清单的源码。
+# 忽略本地配置、运行缓存和构建产物；源码与部署模板仍纳入版本管理。
 #
 # 注意：本文件刻意**不使用**裸目录名（如 `build/`、`file/`、`dist/`）。
 # 那类写法会匹配任意层级，从而静默吃掉真实源码 —— 实测会误伤
 #   admin-web/src/views/tool/build/*.vue        （6 个）
 #   backend/src/**/common/{exception,utils}/file/**  （7 个）
-# 参见 docs/PITFALLS.md §24.1「候选包里少了整个业务目录 / 目录名排除误伤」。
 # 因此下面一律使用「以 / 开头」的锚定路径。
 
 # ---------- 后端构建产物 ----------
@@ -56,13 +53,13 @@ desktop.ini
 # ---------- 其他 ----------
 *.xml.versionsBackup
 
-# ---------- 本地环境文件（含真实口令，绝不入库；OS014 起 compose 也用 deploy/.env） ----------
+# ---------- 本地环境文件（含真实口令，绝不入库） ----------
 # 注意：只写精确文件名，不要写 .env* —— 那会把 deploy/.env.example 模板一起忽略掉
 /.env
 /.env.local
 /deploy/.env
 /scripts/env.local
 
-# ---------- Python 缓存（OS030：scripts/__pycache__ 属运行期缓存，不入库） ----------
+# ---------- Python 缓存（scripts/__pycache__ 属运行期缓存，不入库） ----------
 scripts/__pycache__/
 __pycache__/

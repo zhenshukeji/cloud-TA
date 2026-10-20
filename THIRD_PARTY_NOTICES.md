@@ -1,17 +1,6 @@
-# 第三方组件许可清单（THIRD_PARTY_NOTICES）
+# 第三方版权与许可声明
 
-本文件由脚本 `outputs/open-source-review/OS016/os016-third-party.py` 依据**项目锁定的依赖版本**生成，
-可复跑、结果可复算。本仓库自有代码的许可是 **AGPL-3.0**（见 `LICENSE`）。
-
-**口径**
-
-- 后端：`mvn dependency:list -DincludeScope=runtime` 的运行时依赖（含传递依赖），共 **109** 个；
-  许可证取自各依赖 pom 的 `<licenses>`，pom 未声明时**沿 `<parent>` 链追溯**（不采用 `.m2` 里的其他版本、也不采用第三方网站的转述）。
-- 前端：`admin-web/package.json` 中**直接声明**的依赖，共 **57** 个（dependencies + devDependencies）；
-  许可证取自 `node_modules/<包>/package.json` 的 `license` 字段。前端传递依赖未逐个列出 —— 
-  社区版只分发构建产物，且这份清单用于「组合分发合规」，直接依赖即最小可审计集合。
-- 本清单是**事实收集**，不代替法务结论；与 AGPL-3.0 组合分发时的兼容性判断请见 `COMMERCIAL-LICENSING.md`。
-- **上游项目**与**源码内复制的第三方代码**这两类 pom / package.json 说不清的东西，单列在第 1、5 节；其许可证原文缓存于 `outputs/open-source-review/OS003/_upstream/` 并钉了 sha256。
+本项目自有代码采用 AGPL-3.0，见根目录 `LICENSE`。第三方依赖及复制进源码的第三方文件仍适用各自原始许可；下列声明随源代码保留。
 
 ## 1. 上游项目来源声明
 
@@ -22,11 +11,10 @@
 - 上游地址：https://gitee.com/y_project/RuoYi-Vue
 - **版权声明（逐字）**：`Copyright (c) 2018 RuoYi`
 - 许可证原文：https://raw.githubusercontent.com/yangzongzhuan/RuoYi/master/LICENSE
-- 原文快照：`outputs/open-source-review/OS003/_upstream/ruoyi-LICENSE.txt`，sha256 `46973d260eabeaf4…`（复算一致：True）
 - 派生范围：
   - admin-web/：整套前端脚手架与公共组件（vue-element-admin / RuoYi-Vue 血统），本次改造在其上做精简与重做，未替换技术栈
   - backend/：framework/ 与 common/ 下的多个基础设施类（RuoYiConfig、ExcelUtil、FileUploadUtils、AddressUtils、SecurityConfig 的基础实现等）
-- 义务履行：MIT 只要求「保留版权声明与许可原文」。已在本文件第 4 节逐字给出版权行，并在候选包根目录 LICENSE 之外单独列出；未使用其商标。
+- 义务履行：保留上游版权声明与许可链接；第三方许可不因本项目提供商业许可而被替换。
 
 ## 2. 后端运行时依赖（按许可证分组）
 

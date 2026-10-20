@@ -156,7 +156,7 @@ docker compose --env-file deploy/.env -f deploy/docker-compose.yml ps    # 四�
 1. **准备数据**：建库（要求库名前缀 `yunduo_community`），依次执行
    `database/001_schema.sql` → `database/002_seed_system.sql`（→ 可选 `database/003_demo_data.sql`）
 2. **准备 Redis**：建议用独立逻辑库（默认 12）
-3. **配置环境变量**：复制 `scripts/env.local.example` 为 `env.local` 后 `set -a && source env.local && set +a`
+3. **配置环境变量**：复制 `scripts/env.local.example` 为 `scripts/env.local`，填写配置后执行 `set -a && source scripts/env.local && set +a`
 4. **起后端**：`cd backend && mvn -o spring-boot:run`（JDK 8 + Maven）
 5. **起前端**：`cd admin-web && npm ci && npm run dev`（依赖已由 `package-lock.json` 锁定；`legacy-peer-deps` 已由 `.npmrc` 固化；Node 22/24 需 `NODE_OPTIONS=--openssl-legacy-provider` 跑生产构建）
 
@@ -193,7 +193,7 @@ python scripts/set-demo-passwords.py
   清浏览器缓存重登。
 - **注意两种「升级后会重新登录」的情况**：① 换了 `TOKEN_SECRET`；② 从更早版本升级到本版
   （登录令牌的 Redis key 加了应用级前缀，旧令牌会失效）。
-- 详细步骤见 **`docs/OPERATIONS.md`**；首次部署逐项核对 **`docs/USER-SETUP-CHECKLIST.md`**（含必须替换的默认值）；
+- 备份、恢复与升级见 [运维手册](docs/OPERATIONS.md)；首次配置要求见[部署文档](docs/DEPLOYMENT.md#2-部署前必读)。
 - 部署指南（源码/Docker 两种方式、升级、常见问题）见 **`docs/DEPLOYMENT.md`**。
 
 ## 8. 安全与漏洞报告
@@ -201,16 +201,15 @@ python scripts/set-demo-passwords.py
 - 令牌：JWT + Redis 登录态，密钥强度硬校验（长度 ≥ 32、不同字符 ≥ 8、拒绝占位符）；登录失败次数超限临时锁定。
 - 权限：接口级 `@PreAuthorize` 鉴权；权限拒绝的形态是 **HTTP 200 + `body.code=403`**（客户端判码，不判状态码）。
 - 暴露面：默认关闭 Swagger 与 Druid 控制台；Docker 部署只发布前端端口，MySQL/Redis 不对外。
-- **发现安全问题请勿直接开公开 Issue**，按 `SECURITY.md` 的方式私下上报。
+- **发现安全问题请勿直接开公开 Issue**，请发邮件至 duanmingwei@szzhenshu.com，标题以 `[SECURITY]` 开头；请勿附带真实师生资料或生产凭据。
+- 项目沿用 Java 8、Spring Boot 2 与 Vue 2 技术栈，存在历史依赖安全债务；上线前请检查依赖更新并按部署环境做好访问控制。
 
 ## 9. 测试与验收
 - 后端集成测试：`cd backend && mvn -o test -Pcommunity-verify`（12 项最低测试集 = 15 个用例，含负向对照）。
   注意：pom 里有 `skipTests=true` 用于打包提速，**必须带 `-Pcommunity-verify`** 才会真的跑；
   `Tests run: 0` 就是漏带了 profile。
 - 首次在全新机器上跑测试需要联网（Maven 要下载 surefire provider），之后就支持离线。
-- 端到端验收入口（需自行准备环境变量）：`scripts/smoke-test.py`、`scripts/verify-env.py`。
-- 界面截图不是手工截的：用 headless Chrome 逐页打开、逐页断言生成，复跑得到同样的图；
-  说明与每页的断言写在 `docs/screenshots/README.md`。
+- 部署后的业务检查：登录 → 新建教师、课程、班级及学员 → 登记报读 → 排课 → 点名 → 核对剩余课时与流水。请在独立测试环境使用虚构数据。
 
 ## 10. 社区版与商业版对比
 | 能力 | 社区版（本仓库，AGPL-3.0） | 商业版 |
@@ -324,37 +323,31 @@ python scripts/set-demo-passwords.py
 ### 11.3 咨询与升级
 
 - **商务咨询**：duanmingwei@szzhenshu.com ｜ **官网**：www.szzhenshu.com ｜ **个人微信**：iamdmw
-- 双许可与商业许可的适用范围：**`COMMERCIAL-LICENSING.md`**；第三方组件许可清单：**`THIRD_PARTY_NOTICES.md`**
-- 技术问题请走仓库 Issue（社区支持，尽力而为）；安全披露见 `SECURITY.md`
+- 双许可与商业许可的适用范围：**`COMMERCIAL-LICENSING.md`**
+- 技术问题请走仓库 Issue（社区支持，尽力而为）；安全问题请通过上述商务邮箱私下反馈
 
 ![个人微信二维码](docs/commercial/wechat-qr.jpg)
 
 *微信扫码加个人微信（微信号 iamdmw）咨询商业版 —— 二维码也可以直接在仓库 `docs/commercial/wechat-qr.jpg` 查看。*
 
-## 12. 贡献与支持边界
-欢迎提 Issue 与 PR，约定见 **`CONTRIBUTING.md`**。请先明确支持边界：
+## 12. 支持与反馈
 
-- **社区版接受**：缺陷修复、文档改进、社区版范围内的功能增强、测试补充。
-- **社区支持不承诺**：响应时间、版本节奏、向后兼容性；商业版支持范围与 SLA 以合同约定为准。
-- 提交前请确认你已阅读 `SECURITY.md`（漏洞）与 `LICENSE`（许可义务）。
+欢迎通过仓库 Issue / PR 反馈缺陷、改进文档和提交社区版范围内的功能增强；安全问题请通过商务邮箱私下反馈。
+社区支持尽力而为，不承诺响应时间、版本节奏或向后兼容性；商业支持、实施培训与 SLA 以合同约定为准。
+使用与分发须遵守 [LICENSE](LICENSE)，第三方组件的版权与许可见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 
 ## 13. 目录结构
 ```
 community-edition/
-├── LICENSE                      AGPL-3.0 全文
-├── COMMERCIAL-LICENSING.md      双许可与商业许可说明
-├── THIRD_PARTY_NOTICES.md       第三方组件许可清单
-├── SECURITY.md                  漏洞报告方式
-├── CONTRIBUTING.md              贡献与支持边界
-├── database/                    001 结构 / 002 系统种子 / 003 演示数据（均可重复执行）
+├── LICENSE                      社区版 AGPL-3.0 许可证
+├── COMMERCIAL-LICENSING.md       商业许可与咨询方式
+├── THIRD_PARTY_NOTICES.md        第三方版权与许可声明
+├── database/                    结构、系统种子、演示数据及升级脚本
 ├── backend/                     Spring Boot 后端（Java 8）
-│   └── src/test/java/com/zhenshu/community/   集成测试（OS012 起）
 ├── admin-web/                   PC 管理后台（Vue 2 + Element UI）
-├── deploy/                      Docker Compose 部署（compose / Dockerfile / nginx / .env.example）
-├── scripts/                     环境校验、冒烟测试、演示口令注入、默认头像生成
-├── docs/                        运维手册 + 实测界面截图
-│   └── screenshots/             README 用的 8 张界面截图（含生成说明）
-└── MANIFEST.sha256.*            候选包逐文件校验清单（发布审计用）
+├── deploy/                      Docker Compose、Dockerfile 与 Nginx 配置
+├── scripts/                     本地配置模板、演示密码设置与数据库备份
+└── docs/                        部署、运维及 README 产品图片
 ```
 
 

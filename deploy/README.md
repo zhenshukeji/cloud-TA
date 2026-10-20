@@ -62,27 +62,9 @@ python scripts/set-demo-passwords.py
   `01-001-schema.sql` → `02-002-seed.sql`（→ 可选 `03-003-demo-data.sql`），
   由 MySQL 官方镜像保证「只在空数据卷执行一次」。
 
-## 3. 本项目已实测到什么程度（重要）
+## 3. 部署验证范围
 
-构建与部署是**在 Docker 里跑**的，而开发这一版的环境里**没有 Docker**。因此本目录拆成两半如实标注：
-
-| 检查 | 在哪验的 | 结果 |
-|---|---|---|
-| **compose 文件是否符合官方 Compose 规范**（用 compose-spec 官方 JSON Schema 校验，schema 已留档并钉 sha256） | 本机（离线，含规则自检） | ✅ `outputs/open-source-review/OS014/compose-schema.json` |
-| compose 结构（服务 / 命名卷 / healthcheck / depends_on 条件 / 端口暴露面 / init 挂载） | 本机（结构断言） | ✅ `outputs/open-source-review/OS014/acceptance.json` |
-| 环境变量契约（compose ↔ 后端启动守卫 ↔ `.env.example`） | 本机（集合运算） | ✅ |
-| 凭据扫描（compose / `.env.example` / Dockerfile / nginx.conf） | 本机（含合成样本负向对照） | ✅ 0 命中 |
-| Nginx 暴露面（只有 `/` 与 `^~ /api/`，无其他 location） | 本机（解析 conf） | ✅ |
-| **后端镜像里要跑的东西能否跑起来**（`target/jianxue.jar` + `docker` profile + 同款环境变量） | 本机（`java -jar` 起真进程、真登录、真上传、真查 Redis key） | ✅ |
-| **登录令牌 key 是否带应用级前缀**（OS008 移交项） | 本机（Redis 里断言 `yunduo_community_login_tokens:*`，且不存在裸 `login_tokens:*`） | ✅ |
-| `docker compose config` / `build` / `up` / `ps` | 需要 Docker | ⚠️ **未执行**（本机无 Docker） |
-| 「从空数据卷跑完整冒烟测试」 | 需要 Docker | ⚠️ **未执行** |
-
-在装有 Docker 的机器上，一条命令补齐后两行：
-
-```bash
-python outputs/open-source-review/OS014/os014-verify.py --with-docker
-```
+Compose 编排已完成离线结构与配置检查，真实 Docker 容器端到端验证尚未完成。请在自己的测试环境核对容器健康状态、登录、上传和业务流程后再安排上线。
 
 ## 4. 常用操作
 
